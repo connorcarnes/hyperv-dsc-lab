@@ -1,34 +1,72 @@
-$vms     = 'DC00', 'DC01'
-$VhdPath = 'C:\virt\vhds'
-$vms | Stop-VM -Force -ErrorAction 'SilentlyContinue'
-$vms | Remove-VM -Force -ErrorAction 'SilentlyContinue'
-$vms | ForEach-Object { Remove-Item $VhdPath\$_\$_.vhdx }
+<#
+    .SYNOPSIS
+        Short descripton
+    .DESCRIPTION
+        Long description
+    .PARAMETER ParamterOne
+        Explain the parameter
+    .EXAMPLE
+        PS C:\> <example usage>
+        Explanation of what the example does
+    .OUTPUTS
+        Output (if any)
+    .NOTES
+        General notes
+    .LINK
+        Link to other documentation
+#>
+function Invoke-DscLab {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [String[]]$Nodes,
+        [Parameter(Mandatory)]
+        [PSCredential]$Credential
+    )
 
-$vms | Foreach-Object -Parallel {
-    $VmName = $_
-    $VhdPath         = 'C:\virt\vhds'
-    $BaseVHD         = "$VhdPath\gold-imgs\test.vhdx"
-    $SetupScript     = "C:\code\local-hyperv-dsc-lab\Setup.ps1"
-    $NewCertFunction = "C:\code\local-hyperv-dsc-lab\New-SelfSignedCertificateEx.ps1"
-    $Path            = "$VhdPath\$VmName"
+    begin {
+        Write-Verbose "$($MyInvocation.MyCommand.Name) :: BEGIN :: $(Get-Date)"
 
-    if (-not (Test-Path $Path)) {
-        New-Item -Type Directory -Path $Path
+        switch ($PSVersiontable.PSVersion.Major) {
+            7       { $Splat = @{Parallel = $null} }
+            default { $Splat = @{Process  = $null} }
+        }
     }
 
-    Copy-Item -Path $BaseVHD -Destination "$VhdPath\$VmName\$VmName.vhdx"
+    process {
+        $Config = Get-LabConfiguration
 
-    $DriveLetter = ((Mount-VHD -Path "C:\virt\vhds\$VmName\$VmName.vhdx" -PassThru |
-        Get-Disk |
-        Get-Partition |
-        Get-Volume).DriveLetter |
-        Out-String).Trim()
+        $ScriptBlock = {
+            $VMVHDFolder = "$($Using:Config.VMHostVHDPath)\$_"
+            if (-not (Test-Path $VMVHDFolder) {
+                [void](New-Item -Type Directory -Path $VMVHDFolder)
+            }
 
-    $ExecutionContext.InvokeCommand.ExpandString((Get-Content $SetupScript -Raw)) |
-        Set-Content "$DriveLetter`:\Windows\Panther\Setup.ps1" -Force
+            Copy-Item -Path $($Using:Config.BaseVHDPath) -Destination "$VMVHDFolder\$_.vhdx"
 
-    #Copy-Item -Path $SetupScript -Destination "$DriveLetter`:\Windows\Panther\Setup.ps1" -Force
-    Copy-Item -Path $NewCertFunction -Destination "$DriveLetter`:\Windows\Panther\New-SelfSignedCertificateEx.ps1" -Force
+            $DriveLetter = ((Mount-VHD -Path "$VMVHDFolder\$_.vhdx" -PassThru |
+                Get-Disk |
+                Get-Partition |
+                Get-Volume).DriveLetter |
+                Out-String).Trim()
 
-    Dismount-VHD "C:\virt\vhds\$VmName\$VmName.vhdx"
+            # Reassign $_ here for string expansion in setup.ps1
+            $VmName = $_
+            $ExecutionContext.InvokeCommand.ExpandString((Get-Content $SetupScript -Raw)) |
+                Set-Content "$DriveLetter`:\Windows\Panther\Setup.ps1" -Force
+
+            Dismount-VHD "C:\virt\vhds\$VmName\$VmName.vhdx"
+        }
+
+        switch ($Splat.Keys) {
+            Parallel { $Splat['Parallel'] = $ScriptBlock }
+            Process  { $Splat['Process']  = $ScriptBlock }
+        }
+
+        $Nodes | ForEach-Object @Splat
+    }
+
+    end {
+        Write-Verbose "$($MyInvocation.MyCommand.Name) :: END :: $(Get-Date)"
+    }
 }
