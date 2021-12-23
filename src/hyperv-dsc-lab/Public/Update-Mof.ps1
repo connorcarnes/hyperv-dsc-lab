@@ -1,21 +1,61 @@
-﻿$vms     = 'DC00', 'DC01'
-$VhdPath = 'C:\virt\vhds'
+﻿<#
+    .SYNOPSIS
+        Short descripton
+    .DESCRIPTION
+        Long description
+    .PARAMETER ParamterOne
+        Explain the parameter
+    .EXAMPLE
+        PS C:\> <example usage>
+        Explanation of what the example does
+    .OUTPUTS
+        Output (if any)
+    .NOTES
+        General notes
+    .LINK
+        Link to other documentation
+#>
+function Update-Mof {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [String[]]$Nodes,
+        [Parameter(Mandatory)]
+        [PSCredential]$Credential
+    )
 
-$vms | Foreach-Object -Parallel {
-    $VmName  = $_
-    $VhdPath = 'C:\virt\vhds'
+    begin {
+        Write-Verbose "$($MyInvocation.MyCommand.Name) :: BEGIN :: $(Get-Date)"
 
-    $DriveLetter = ((Mount-VHD -Path "$VhdPath\$VmName\$VmName.vhdx" -PassThru |
-        Get-Disk |
-        Get-Partition |
-        Get-Volume).DriveLetter |
-        Out-String).Trim()
+        switch ($PSVersiontable.PSVersion.Major) {
+            7       { $Splat = @{Parallel = $null} }
+            default { $Splat = @{Process  = $null} }
+        }
+    }
 
-    $Source      = "C:\code\local-hyperv-dsc-lab\VmConfig"
-    $Destination = "$DriveLetter`:\Windows\System32\Configuration"
+    process {
+        $Config = Get-LabConfiguration
 
-    Copy-Item -Path "$Source\$VmName.mof" -Destination "$Destination\Pending.mof" -Force
-    Copy-Item -Path "$Source\$VmName.meta.mof" -Destination "$Destination\MetaConfig.mof" -Force
+        $ScriptBlock = {
+            $Session = New-PSSession $_ -Credential $Using:Credential
+            Invoke-Command -Session $Session -ScriptBlock {
+                $PendingMofPath    = "C:\Windows\System32\Configuration\Pending.mof"
+                $MetaConfigMofPath = "C:\Windows\System32\Configuration\MetaConfig.mof"
+                Copy-Item -Path "$($Using:Config.MofExportPath)\$_.mof"      -Destination $PendingMofPath    -Force
+                Copy-Item -Path "$($Using:Config.MofExportPath)\$_.meta.mof" -Destination $MetaConfigMofPath -Force
+            }
+            $Session | Remove-PSSession
+        }
 
-    Dismount-VHD "C:\virt\vhds\$VmName\$VmName.vhdx"
+        switch ($Splat.Keys) {
+            Parallel { $Splat['Parallel'] = $ScriptBlock }
+            Process  { $Splat['Process']  = $ScriptBlock }
+        }
+
+        $Nodes | ForEach-Object @Splat
+    }
+
+    end {
+        Write-Verbose "$($MyInvocation.MyCommand.Name) :: END :: $(Get-Date)"
+    }
 }

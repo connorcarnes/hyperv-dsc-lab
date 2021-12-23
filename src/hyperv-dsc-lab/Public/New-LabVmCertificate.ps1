@@ -15,7 +15,7 @@
     .LINK
         Link to other documentation
 #>
-function Invoke-DscLab {
+function New-LabVmCertificate {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -26,16 +26,15 @@ function Invoke-DscLab {
 
     begin {
         Write-Verbose "$($MyInvocation.MyCommand.Name) :: BEGIN :: $(Get-Date)"
-
-        switch ($PSVersiontable.PSVersion.Major) {
-            7       { $Splat = @{Parallel = $null} }
-            default { $Splat = @{Process  = $null} }
-        }
     }
 
     process {
-        $CertPath    = (Get-LabConfiguration).CertificateExportPath
-        $ScriptBlock = {
+        $CertPath = (Get-LabConfiguration).CertificateExportPath
+        if (-not (Test-Path $CertPath)) {
+            [void](New-Item -Path $CertPath -ItemType Directory)
+        }
+
+        $Nodes | ForEach-Object -Parallel {
             $Session = New-PSSession $_ -Credential $Using:Credential
             $Cert = Invoke-Command -Session $Session -ScriptBlock {
                 $Splat = @{
@@ -48,14 +47,8 @@ function Invoke-DscLab {
             $Path = "$Using:CertPath\$_-DSC-Lab-PubKey.cer"
             [void](Export-Certificate -Cert $Cert -FilePath $Path)
             [void](Import-Certificate -FilePath $Path -CertStoreLocation Cert:\LocalMachine\My)
+            $Session | Remove-PSSession
         }
-
-        switch ($Splat.Keys) {
-            Parallel { $Splat['Parallel'] = $ScriptBlock }
-            Process  { $Splat['Process']  = $ScriptBlock }
-        }
-
-        $Nodes | ForEach-Object @Splat
     }
 
     end {

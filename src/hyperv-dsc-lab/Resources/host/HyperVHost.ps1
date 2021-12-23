@@ -15,10 +15,10 @@ configuration HyperVHost
         $SwitchName = 'Default Switch',
 
         [System.String]
-        $BaseVhdPath = 'C:\virt\vhds'
+        $VMHostVHDPath = 'C:\virt\vhds'
     )
 
-    Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
+    #Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
     Import-DscResource -ModuleName 'xHyper-V'
 
     Node $NodeName
@@ -28,7 +28,7 @@ configuration HyperVHost
             Name            = 'DC00'
             Generation      = 2
             SwitchName      = $SwitchName
-            VhdPath         = "$BaseVhdPath\DC00\DC00.vhdx"
+            VhdPath         = "$VMHostVHDPath\DC00\DC00.vhdx"
             ProcessorCount  = 2
             MaximumMemory   = 1GB
             MinimumMemory   = 512MB
@@ -42,7 +42,7 @@ configuration HyperVHost
             Name            = 'DC01'
             Generation      = 2
             SwitchName      = $SwitchName
-            VhdPath         = "$BaseVhdPath\DC01\DC01.vhdx"
+            VhdPath         = "$VMHostVHDPath\DC01\DC01.vhdx"
             ProcessorCount  = 2
             MaximumMemory   = 1GB
             MinimumMemory   = 512MB
@@ -52,5 +52,5 @@ configuration HyperVHost
         }
     }
 }
-HyperVHost
-Start-DscConfiguration -Wait -Verbose -Force -Path .\HyperVHost\
+HyperVHost -OutputPath C:\virt\mofs\host
+Start-DscConfiguration -Computername 'localhost' -Wait -Verbose -Force -Path C:\virt\mofs\host

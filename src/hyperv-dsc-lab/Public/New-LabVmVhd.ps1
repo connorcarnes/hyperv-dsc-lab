@@ -15,7 +15,7 @@
     .LINK
         Link to other documentation
 #>
-function Invoke-DscLab {
+function New-LabVmVhd {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -26,44 +26,42 @@ function Invoke-DscLab {
 
     begin {
         Write-Verbose "$($MyInvocation.MyCommand.Name) :: BEGIN :: $(Get-Date)"
-
-        switch ($PSVersiontable.PSVersion.Major) {
-            7       { $Splat = @{Parallel = $null} }
-            default { $Splat = @{Process  = $null} }
-        }
     }
 
     process {
-        $Config = Get-LabConfiguration
+        $Config          = Get-LabConfiguration
+        $VMVHDFolder     = "$($Config.VMHostVHDPath)\`$_"
+        $VMVHDPath       = "$VMVHDFolder\`$_.vhdx"
+        $BaseVHDPath     = $Config.BaseVHDPath
+        $SetupScriptPath = $Config.SetupScriptPath
 
-        $ScriptBlock = {
-            $VMVHDFolder = "$($Using:Config.VMHostVHDPath)\$_"
-            if (-not (Test-Path $VMVHDFolder) {
-                [void](New-Item -Type Directory -Path $VMVHDFolder)
-            }
+        $ScriptBlock = @"
+if (-not (Test-Path $VMVHDFolder)) {
+    [void](New-Item -Type Directory -Path $VMVHDFolder)
+}
 
-            Copy-Item -Path $($Using:Config.BaseVHDPath) -Destination "$VMVHDFolder\$_.vhdx"
+Copy-Item -Path $BaseVHDPath -Destination $VMVHDPath
 
-            $DriveLetter = ((Mount-VHD -Path "$VMVHDFolder\$_.vhdx" -PassThru |
-                Get-Disk |
-                Get-Partition |
-                Get-Volume).DriveLetter |
-                Out-String).Trim()
+`$DriveLetter = ((Mount-VHD -Path $VMVHDPath -PassThru |
+    Get-Disk |
+    Get-Partition |
+    Get-Volume).DriveLetter |
+    Out-String).Trim()
 
-            # Reassign $_ here for string expansion in setup.ps1
-            $VmName = $_
-            $ExecutionContext.InvokeCommand.ExpandString((Get-Content $SetupScript -Raw)) |
-                Set-Content "$DriveLetter`:\Windows\Panther\Setup.ps1" -Force
+# Reassign $_ here for string expansion in setup.ps1
+`$VmName = `$_
+`$ExecutionContext.InvokeCommand.ExpandString((Get-Content $SetupScriptPath -Raw)) |
+    Set-Content "`$DriveLetter``:\Windows\Panther\Setup.ps1" -Force
 
-            Dismount-VHD "C:\virt\vhds\$VmName\$VmName.vhdx"
+Dismount-VHD $VMVHDPath
+"@
+
+        switch ($PSVersiontable.PSVersion.Major) {
+            7       { $Splat = @{Parallel = [scriptblock]::Create($ScriptBlock)} }
+            default { $Splat = @{Process  = [scriptblock]::Create($ScriptBlock)} }
         }
 
-        switch ($Splat.Keys) {
-            Parallel { $Splat['Parallel'] = $ScriptBlock }
-            Process  { $Splat['Process']  = $ScriptBlock }
-        }
-
-        $Nodes | ForEach-Object @Splat
+        $Nodes | ForEach-Object @Splat -Verbose
     }
 
     end {
