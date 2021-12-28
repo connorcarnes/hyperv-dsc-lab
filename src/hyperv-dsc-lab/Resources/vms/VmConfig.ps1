@@ -163,4 +163,3 @@
         }
     }
 }
-#VmConfig -LocalCredential $LocalCredential -DomainCredential $DomainCredential -ConfigurationData $ConfigData -OutputPath $OutputPath

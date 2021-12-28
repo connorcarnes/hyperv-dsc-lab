@@ -36,6 +36,6 @@ function Import-DSCLabConfiguration {
     }
 
     end {
-        Write-Verbose "$($MyInvocation.MyCommand.Name) :: END :: $(Get-Date)"
+        Write-Verbose "$($MyInvocation.MyCommand.Name) :: END   :: $(Get-Date)"
     }
 }

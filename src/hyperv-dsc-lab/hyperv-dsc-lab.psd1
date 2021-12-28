@@ -32,6 +32,7 @@
     FunctionsToExport = @(
         'Expand-DSCConfigurationDataTemplate',
         'Get-DSCLabConfiguration',
+        'Initialize-DSCLabConfiguration',
         'New-HyperVDSCLab',
         'New-LabVmCertificate',
         'New-LabVmVhd',

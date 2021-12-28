@@ -24,6 +24,9 @@ function New-HyperVDSCLab {
         [Parameter(Mandatory)]
         [PSCredential]$LocalCredential,
 
+        [Parameter(Mandatory)]
+        [PSCredential]$DomainCredential,
+
         [Parameter()]
         [int]$TimeoutMinutes = 5
     )
@@ -33,16 +36,36 @@ function New-HyperVDSCLab {
     }
 
     process {
+        $Config = Get-DSCLabConfiguration
+
         Remove-DSCLabVM -VM $VMs
 
         New-LabVmVhd -VM $VMs
 
-        Invoke-DSCLabHostConfiguration
+        $Splat = @{
+            ConfigurationFile = $Config.HostConfiguration
+            OutputPath        = $Config.MofPath
+        }
+        Initialize-DSCLabConfiguration @Splat
+        Start-DscConfiguration -Computername 'localhost' -Path $config.MofPath
 
         Wait-DSCLabVM -VM $VMs -LocalCredential $LocalCredential
+
+        New-LabVmCertificate -VM $VMs -Credential $LocalCredential
+
+        $Splat = @{
+            ConfigurationFile = $Config.VMConfiguration
+            ConfigurationData = $Config.VMConfigurationDataPath
+            OutputPath        = $Config.MofPath
+            LocalCredential   = $LocalCredential
+            DomainCredential  = $DomainCredential
+        }
+        Initialize-DSCLabConfiguration @Splat
+
+        Update-Mof -VMs $VMs -Credential $LocalCredential
     }
 
     end {
-        Write-Verbose "$($MyInvocation.MyCommand.Name) :: END :: $(Get-Date)"
+        Write-Verbose "$($MyInvocation.MyCommand.Name) :: END   :: $(Get-Date)"
     }
 }

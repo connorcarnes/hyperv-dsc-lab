@@ -1,29 +1,39 @@
 ﻿<#
     .SYNOPSIS
-        Short descripton
+    Copies MOF files generated on the host to VMs.
+
     .DESCRIPTION
-        Long description
-    .PARAMETER ParamterOne
-        Explain the parameter
+    Copies MOF files generated on the host to VMs. Searches MofPath of Get-DSCLabConfiguration for MOF files. Files are copied
+    via a Remote PowerShell session and Invoke-Command. Files ending in .mof are copied to "C:\Windows\System32\Configuration\Pending.mof"
+    Files ending in .meta.mof are copied to "C:\Windows\System32\Configuration\MetaConfig.mof". MOF files stored in these locations are
+    applied when the VM is rebooted.
+
+    .PARAMETER VMs
+    Array of VM names.
+
+    .PARAMETER Credential
+    PSCredential used to open a remote session on the VMs.
+
     .EXAMPLE
-        PS C:\> <example usage>
-        Explanation of what the example does
+    $Credential = Get-Credential
+    Update-Mof -VMs 'DC00','DC01' -Credential $Credential
+
+    Opens a remote session for DC00 and DC01 and copies relevant MOF files to "C:\Windows\System32\Configuration" for each VM.
+
     .OUTPUTS
-        Output (if any)
-    .NOTES
-        General notes
+    [void]
+
     .LINK
-        Link to other documentation
+    https://docs.microsoft.com/en-us/powershell/dsc/tutorials/bootstrapdsc?view=dsc-1.1
 #>
 function Update-Mof {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory,HelpMessage = "Array of VM names")]
         [String[]]$VMs,
-        [Parameter(Mandatory)]
-        [PSCredential]$LocalCredential,
-        [Parameter(Mandatory)]
-        [PSCredential]$DomainCredential
+
+        [Parameter(Mandatory,HelpMessage = "PSCredential used to open a remote session on the VMs")]
+        [PSCredential]$Credential
     )
 
     begin {
@@ -33,24 +43,10 @@ function Update-Mof {
     process {
         $Config  = Get-DSCLabConfiguration
 
-        $Session = New-PSSession -UseWindowsPowerShell
-        $Splat = @{
-            LocalCredential   = $LocalCredential
-            DomainCredential  = $DomainCredential
-            ConfigurationData = "$($Config.VMConfigurationDataPath)"
-            OutputPath        = "$($Config.MofExportPath)\vms"
-        }
-        Invoke-Command -Session $Session -ScriptBlock {
-            . C:\code\hyperv-dsc-lab\src\hyperv-dsc-lab\Resources\vms\VmConfig.ps1
-            VmConfig @Using:Splat
-        }
-        $Session | Remove-PSSession
-
-
         $VMs | ForEach-Object -Parallel {
-            $Session        = New-PSSession $_ -Credential $Using:LocalCredential
-            $MofContent     = Get-Content "D:\virt\mofs\vms\$_.mof" -Raw
-            $MetaMofContent = Get-Content "D:\virt\mofs\vms\$_.meta.mof" -Raw
+            $Session        = New-PSSession $_ -Credential $Using:Credential
+            $MofContent     = Get-Content "$($Using:Config.MofPath)\$_.mof" -Raw
+            $MetaMofContent = Get-Content "$($Using:Config.MofPath)\$_.meta.mof" -Raw
             Invoke-Command -Session $Session -ArgumentList $MofContent,$MetaMofContent -ScriptBlock {
                 param($MofContent,$MetaMofContent)
                 Set-Content -Path "C:\Windows\System32\Configuration\Pending.mof"    -Value $MofContent     -Force
@@ -61,6 +57,6 @@ function Update-Mof {
     }
 
     end {
-        Write-Verbose "$($MyInvocation.MyCommand.Name) :: END :: $(Get-Date)"
+        Write-Verbose "$($MyInvocation.MyCommand.Name) :: END   :: $(Get-Date)"
     }
 }

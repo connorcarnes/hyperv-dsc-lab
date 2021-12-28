@@ -1,26 +1,44 @@
 <#
     .SYNOPSIS
-        Short descripton
+    Creates self-signed certificate on a VM and exports it to the host.
+
     .DESCRIPTION
-        Long description
-    .PARAMETER ParamterOne
-        Explain the parameter
+    Creates self-signed certificate on a VM and exports it to the host. Certificate is created in a remote PSSession. Certificate public key is exported
+    to the CertificatePath value of Get-DSCLabConfiguration with the name "<YourVMName>-DSC-Lab-PubKey.cer" and imported into the host's certificate store
+    at Cert:\LocalMachine\My.
+
+    Certificates are created via New-SelfSignedCertificate with the below parameters::
+
+    Type          = 'DocumentEncryptionCertLegacyCsp'
+    Subject       = '<YourVMName>-DSC-Lab'
+    HashAlgorithm = 'SHA256'
+
+    .PARAMETER VMs
+    Array of VM names.
+
+    .PARAMETER Credential
+    PSCredential used to open a remote session on the VMs.
+
     .EXAMPLE
-        PS C:\> <example usage>
-        Explanation of what the example does
+    $Credential = Get-Credential
+    New-LabVmCertificate -VMs 'DC00','DC01' -Credential $Credential
+
+    Opens a remote session for DC00 and DC01 and creates a self-signed certificate on each VM. The certificate public key is exported
+    to the CertificatePath value of Get-DSCLabConfiguration and imported into the host's certificate store at Cert:\LocalMachine\My.
+
     .OUTPUTS
-        Output (if any)
-    .NOTES
-        General notes
+    [void]
+
     .LINK
-        Link to other documentation
+    https://docs.microsoft.com/en-us/powershell/dsc/pull-server/secureMOF?view=dsc-1.1
 #>
 function New-LabVmCertificate {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory,HelpMessage = "Array of VM names")]
         [String[]]$VMs,
-        [Parameter(Mandatory)]
+
+        [Parameter(Mandatory,HelpMessage = "PSCredential used to open a remote session on the VMs")]
         [PSCredential]$Credential
     )
 
@@ -29,26 +47,19 @@ function New-LabVmCertificate {
     }
 
     process {
-        $CertPath = (Get-DSCLabConfiguration).CertificatePath
+        $Config   = Get-DSCLabConfiguration
+        $CertPath = $Config.CertificatePath
         if (-not (Test-Path $CertPath)) {
+            Write-Verbose "Creating certificate directory: $CertPath"
             [void](New-Item -Path $CertPath -ItemType Directory)
         }
 
+        Write-Verbose "Creating new self-signed certificate on VM(s): $($VMs -join ', ')"
+        Write-Verbose "Public keys will be exported to $CertPath and imported to Cert:\LocalMachine\My on the host."
         $VMs | ForEach-Object -Process {
             $Session     = New-PSSession $_ -Credential $Credential
             $CertSubject = "$_-DSC-Lab"
-
-            # Remove old lab certificates from host
-            Get-ChildItem -Path "Cert:\LocalMachine\My" |
-                Where-Object {$_.Subject -eq "CN=$CertSubject" -and $_.EnhancedKeyUsageList.FriendlyName -eq 'Document Encryption'} |
-                Remove-Item
-
-            $Cert = Invoke-Command -Session $Session -ScriptBlock {
-                # Remove old lab certificates from vm
-                [void](Get-ChildItem Cert:\LocalMachine\My |
-                    Where-Object {$_.Subject -eq "CN=$Using:CertSubject"} |
-                    Remove-Item)
-                # Create new cert
+            $Cert        = Invoke-Command -Session $Session -ScriptBlock {
                 $Splat = @{
                     Type          = 'DocumentEncryptionCertLegacyCsp'
                     Subject       = "$Using:CertSubject"
@@ -57,15 +68,16 @@ function New-LabVmCertificate {
                 New-SelfSignedCertificate @Splat
             }
 
-            # Export cert from vm and import to host
+            # Export cert from vm and import to host certificate store.
             $Path = "$CertPath\$CertSubject-PubKey.cer"
             [void](Export-Certificate -Cert $Cert -FilePath $Path)
             [void](Import-Certificate -FilePath $Path -CertStoreLocation Cert:\LocalMachine\My)
+
             $Session | Remove-PSSession
         }
     }
 
     end {
-        Write-Verbose "$($MyInvocation.MyCommand.Name) :: END :: $(Get-Date)"
+        Write-Verbose "$($MyInvocation.MyCommand.Name) :: END   :: $(Get-Date)"
     }
 }

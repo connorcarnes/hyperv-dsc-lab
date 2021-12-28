@@ -1,10 +1,4 @@
-﻿# https://dsccommunity.org/help/
-# https://github.com/dsccommunity/xHyper-V
-# https://mikefrobbins.com/2015/01/22/creating-hyper-v-vms-with-desired-state-configuration/
-# $env:psmodulepath = 'C:\Program Files\WindowsPowerShell\Modules;C:\Windows\system32\WindowsPowerShell\v1.0\Modules;C:\Program Files (x86)\Windows Kits\10\Microsoft Application Virtualization\Sequencer\AppvPkgConverter;C:\Program Files (x86)\Windows Kits\10\Microsoft Application Virtualization\Sequencer\AppvSequencer;C:\Program Files (x86)\Windows Kits\10\Microsoft Application Virtualization\'
-# Installing roles and features using PowerShell Desired State Configuration is supported only on Server SKU's. It is not supported on Client SKU.
-# https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/user-guide/setup-nat-network
-configuration HyperVHost
+﻿configuration HyperVHost
 {
     param
     (
@@ -52,5 +46,3 @@ configuration HyperVHost
         }
     }
 }
-HyperVHost -OutputPath C:\virt\mofs\host
-Start-DscConfiguration -Computername 'localhost' -Wait -Verbose -Force -Path C:\virt\mofs\host
