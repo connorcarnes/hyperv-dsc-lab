@@ -22,12 +22,9 @@
     .LINK
     Link to other documentation
 #>
-function Invoke-HyperVHostDscConfig {
+function Invoke-DSCLabHostConfiguration {
     [CmdletBinding()]
-    param (
-        [Parameter()]
-        [ParameterType]$ParameterName
-    )
+    param ()
 
     begin {
         Write-Verbose "$($MyInvocation.MyCommand.Name) :: BEGIN :: $(Get-Date)"

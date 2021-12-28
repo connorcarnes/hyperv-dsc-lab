@@ -15,7 +15,7 @@ configuration HyperVHost
         $SwitchName = 'Default Switch',
 
         [System.String]
-        $VMHostVHDPath = 'D:\virt\vhds'
+        $LabVHDPath = 'D:\virt\vhds'
     )
 
     #Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
@@ -28,7 +28,7 @@ configuration HyperVHost
             Name            = 'DC00'
             Generation      = 2
             SwitchName      = $SwitchName
-            VhdPath         = "$VMHostVHDPath\DC00\DC00.vhdx"
+            VhdPath         = "$LabVHDPath\DC00\DC00.vhdx"
             ProcessorCount  = 2
             MaximumMemory   = 2GB
             MinimumMemory   = 512MB
@@ -42,7 +42,7 @@ configuration HyperVHost
             Name            = 'DC01'
             Generation      = 2
             SwitchName      = $SwitchName
-            VhdPath         = "$VMHostVHDPath\DC01\DC01.vhdx"
+            VhdPath         = "$LabVHDPath\DC01\DC01.vhdx"
             ProcessorCount  = 2
             MaximumMemory   = 2GB
             MinimumMemory   = 512MB

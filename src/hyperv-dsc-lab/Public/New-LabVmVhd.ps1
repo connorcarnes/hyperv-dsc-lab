@@ -19,9 +19,7 @@ function New-LabVmVhd {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
-        [String[]]$Nodes,
-        [Parameter(Mandatory)]
-        [PSCredential]$Credential
+        [String[]]$VMs
     )
 
     begin {
@@ -29,8 +27,8 @@ function New-LabVmVhd {
     }
 
     process {
-        $Config          = Get-LabConfiguration
-        $VMVHDFolder     = "$($Config.VMHostVHDPath)\`$_"
+        $Config          = Get-DSCLabConfiguration
+        $VMVHDFolder     = "$($Config.LabVHDPath)\`$_"
         $VMVHDPath       = "$VMVHDFolder\`$_.vhdx"
         $BaseVHDPath     = $Config.BaseVHDPath
         $SetupScriptPath = $Config.SetupScriptPath
@@ -61,7 +59,7 @@ Dismount-VHD $VMVHDPath
             default { $Splat = @{Process  = [scriptblock]::Create($ScriptBlock)} }
         }
 
-        $Nodes | ForEach-Object @Splat -Verbose
+        $VMs | ForEach-Object @Splat -Verbose
     }
 
     end {

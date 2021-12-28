@@ -40,7 +40,11 @@ function Set-DSCLabConfiguration {
         [Parameter(HelpMessage = "Hashtable of other properties to save in the configuration file.")]
         [hashtable]$Other,
         [Parameter(HelpMessage = "Path to psd1 file that contains DSC configuration data for lab VMs.")]
-        [String]$VMConfigurationDataPath
+        [String]$VMConfigurationDataPath,
+        [Parameter(HelpMessage = "Path to DSC Configuration for Lab VMs.")]
+        [String]$VMConfiguration,
+        [Parameter(HelpMessage = "Path to DSC Configuration for Lab Host.")]
+        [String]$HostConfiguration
     )
 
     begin {

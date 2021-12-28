@@ -1,13 +1,15 @@
 {
-  "BaseVHDPath": "D:\\virt\\vhds\\base-vhds\\win22.vhdx",
-  "VMConfigurationDataPath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\vms\\VMConfigurationData.psd1",
-  "SetupScriptPath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\Setup.ps1",
   "Other": {
     "DefaultGateway": "172.21.64.1",
-    "DC00IP": "172.21.64.10",
-    "DC01IP": "172.21.64.11"
+    "DC01IP": "172.21.64.11",
+    "DC00IP": "172.21.64.10"
   },
-  "MofPath": "D:\\virt\\mofs",
+  "BaseVHDPath": "D:\\virt\\vhds\\base-vhds\\win22.vhdx",
   "CertificatePath": "D:\\virt\\certs",
-  "LabVHDPath": "D:\\virt\\vhds"
+  "VMConfiguration": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\vms\\VmConfig.ps1",
+  "MofPath": "D:\\virt\\mofs",
+  "LabVHDPath": "D:\\virt\\vhds",
+  "SetupScriptPath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\Setup.ps1",
+  "VMConfigurationDataPath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\vms\\VMConfigurationData.psd1",
+  "HostConfiguration": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\host\\HyperVHost.ps1"
 }

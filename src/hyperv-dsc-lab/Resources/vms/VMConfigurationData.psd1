@@ -10,13 +10,13 @@
         @{
             NodeName        = 'DC00'
             IPAddress       = '172.21.64.10'
-            CertificateFile = '\DC00-DSC-Lab-PubKey.cer'
+            CertificateFile = 'D:\virt\certs\DC00-DSC-Lab-PubKey.cer'
             Role            = 'Domain Controller'
         },
         @{
             NodeName        = 'DC01'
             IPAddress       = '172.21.64.11'
-            CertificateFile = '\DC01-DSC-Lab-PubKey.cer'
+            CertificateFile = 'D:\virt\certs\DC01-DSC-Lab-PubKey.cer'
             Role            = 'Domain Controller'
         }
     )

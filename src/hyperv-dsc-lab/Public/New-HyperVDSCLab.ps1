@@ -15,11 +15,17 @@
     .LINK
         Link to other documentation
 #>
-function Invoke-DscLab {
+function New-HyperVDSCLab {
     [CmdletBinding()]
     param (
+        [Parameter(Mandatory)]
+        [String[]]$VMs,
+
+        [Parameter(Mandatory)]
+        [PSCredential]$LocalCredential,
+
         [Parameter()]
-        [ParameterType]$ParameterName
+        [int]$TimeoutMinutes = 5
     )
 
     begin {
@@ -27,7 +33,13 @@ function Invoke-DscLab {
     }
 
     process {
+        Remove-DSCLabVM -VM $VMs
 
+        New-LabVmVhd -VM $VMs
+
+        Invoke-DSCLabHostConfiguration
+
+        Wait-DSCLabVM -VM $VMs -LocalCredential $LocalCredential
     }
 
     end {

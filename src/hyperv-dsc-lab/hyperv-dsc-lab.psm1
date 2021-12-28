@@ -36,7 +36,9 @@ $REQ_DSC_LAB_CONFIG_PROPS = @(
     "MofPath",
     "SetupScriptPath",
     "BaseVHDPath",
-    "VMConfigurationDataPath"
+    "VMConfigurationDataPath",
+    "VMConfiguration",
+    "HostConfiguration"
 )
 $VarParams = @{
     'Name'        = 'VISIONAIRE_PATH'

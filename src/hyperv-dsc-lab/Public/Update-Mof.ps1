@@ -19,7 +19,7 @@ function Update-Mof {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
-        [String[]]$Nodes,
+        [String[]]$VMs,
         [Parameter(Mandatory)]
         [PSCredential]$LocalCredential,
         [Parameter(Mandatory)]
@@ -31,13 +31,13 @@ function Update-Mof {
     }
 
     process {
-        $Config  = Get-LabConfiguration
+        $Config  = Get-DSCLabConfiguration
 
         $Session = New-PSSession -UseWindowsPowerShell
         $Splat = @{
             LocalCredential   = $LocalCredential
             DomainCredential  = $DomainCredential
-            ConfigurationData = "C:\code\hyperv-dsc-lab\src\hyperv-dsc-lab\Resources\vms\ConfigData.psd1"
+            ConfigurationData = "$($Config.VMConfigurationDataPath)"
             OutputPath        = "$($Config.MofExportPath)\vms"
         }
         Invoke-Command -Session $Session -ScriptBlock {
@@ -47,7 +47,7 @@ function Update-Mof {
         $Session | Remove-PSSession
 
 
-        $Nodes | ForEach-Object -Parallel {
+        $VMs | ForEach-Object -Parallel {
             $Session        = New-PSSession $_ -Credential $Using:LocalCredential
             $MofContent     = Get-Content "D:\virt\mofs\vms\$_.mof" -Raw
             $MetaMofContent = Get-Content "D:\virt\mofs\vms\$_.meta.mof" -Raw

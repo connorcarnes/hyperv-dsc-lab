@@ -30,13 +30,12 @@
         }
     )
     FunctionsToExport = @(
-        'Export-DSCConfigurationData',
+        'Expand-DSCConfigurationDataTemplate',
         'Get-DSCLabConfiguration',
-        'Invoke-DscLab',
-        'Invoke-HyperVHostDscConfig',
+        'New-HyperVDSCLab',
         'New-LabVmCertificate',
         'New-LabVmVhd',
-        'Remove-DscLab',
+        'Remove-DSCLabVM',
         'Set-DSCLabConfiguration',
         'Update-Mof'
     )

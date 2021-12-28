@@ -19,7 +19,7 @@ function New-LabVmCertificate {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
-        [String[]]$Nodes,
+        [String[]]$VMs,
         [Parameter(Mandatory)]
         [PSCredential]$Credential
     )
@@ -29,12 +29,12 @@ function New-LabVmCertificate {
     }
 
     process {
-        $CertPath = (Get-LabConfiguration).CertificateExportPath
+        $CertPath = (Get-DSCLabConfiguration).CertificatePath
         if (-not (Test-Path $CertPath)) {
             [void](New-Item -Path $CertPath -ItemType Directory)
         }
 
-        $Nodes | ForEach-Object -Process {
+        $VMs | ForEach-Object -Process {
             $Session     = New-PSSession $_ -Credential $Credential
             $CertSubject = "$_-DSC-Lab"
 
