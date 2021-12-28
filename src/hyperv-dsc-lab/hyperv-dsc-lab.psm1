@@ -30,5 +30,23 @@ foreach ($file in @($public + $private)) {
     }
 }
 
+$REQ_DSC_LAB_CONFIG_PROPS = @(
+    "CertificatePath",
+    "LabVHDPath",
+    "MofPath",
+    "SetupScriptPath",
+    "BaseVHDPath",
+    "VMConfigurationDataPath"
+)
+$VarParams = @{
+    'Name'        = 'VISIONAIRE_PATH'
+    'Value'       =  $REQ_DSC_LAB_CONFIG_PROPS
+    'Description' = 'Path where visio documents and account device lists will be stored.'
+    'Scope'       = 'Script'
+    'Force'       = $True
+    'Option'      = 'readonly'
+}
+Set-Variable @VarParams
+
 # export all public functions
 Export-ModuleMember -Function $public.Basename

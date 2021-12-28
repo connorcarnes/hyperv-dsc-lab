@@ -21,38 +21,43 @@ function Update-Mof {
         [Parameter(Mandatory)]
         [String[]]$Nodes,
         [Parameter(Mandatory)]
-        [PSCredential]$Credential
+        [PSCredential]$LocalCredential,
+        [Parameter(Mandatory)]
+        [PSCredential]$DomainCredential
     )
 
     begin {
         Write-Verbose "$($MyInvocation.MyCommand.Name) :: BEGIN :: $(Get-Date)"
-
-        switch ($PSVersiontable.PSVersion.Major) {
-            7       { $Splat = @{Parallel = $null} }
-            default { $Splat = @{Process  = $null} }
-        }
     }
 
     process {
-        $Config = Get-LabConfiguration
+        $Config  = Get-LabConfiguration
 
-        $ScriptBlock = {
-            $Session = New-PSSession $_ -Credential $Using:Credential
-            Invoke-Command -Session $Session -ScriptBlock {
-                $PendingMofPath    = "C:\Windows\System32\Configuration\Pending.mof"
-                $MetaConfigMofPath = "C:\Windows\System32\Configuration\MetaConfig.mof"
-                Copy-Item -Path "$($Using:Config.MofExportPath)\$_.mof"      -Destination $PendingMofPath    -Force
-                Copy-Item -Path "$($Using:Config.MofExportPath)\$_.meta.mof" -Destination $MetaConfigMofPath -Force
+        $Session = New-PSSession -UseWindowsPowerShell
+        $Splat = @{
+            LocalCredential   = $LocalCredential
+            DomainCredential  = $DomainCredential
+            ConfigurationData = "C:\code\hyperv-dsc-lab\src\hyperv-dsc-lab\Resources\vms\ConfigData.psd1"
+            OutputPath        = "$($Config.MofExportPath)\vms"
+        }
+        Invoke-Command -Session $Session -ScriptBlock {
+            . C:\code\hyperv-dsc-lab\src\hyperv-dsc-lab\Resources\vms\VmConfig.ps1
+            VmConfig @Using:Splat
+        }
+        $Session | Remove-PSSession
+
+
+        $Nodes | ForEach-Object -Parallel {
+            $Session        = New-PSSession $_ -Credential $Using:LocalCredential
+            $MofContent     = Get-Content "D:\virt\mofs\vms\$_.mof" -Raw
+            $MetaMofContent = Get-Content "D:\virt\mofs\vms\$_.meta.mof" -Raw
+            Invoke-Command -Session $Session -ArgumentList $MofContent,$MetaMofContent -ScriptBlock {
+                param($MofContent,$MetaMofContent)
+                Set-Content -Path "C:\Windows\System32\Configuration\Pending.mof"    -Value $MofContent     -Force
+                Set-Content -Path "C:\Windows\System32\Configuration\MetaConfig.mof" -Value $MetaMofContent -Force
             }
             $Session | Remove-PSSession
         }
-
-        switch ($Splat.Keys) {
-            Parallel { $Splat['Parallel'] = $ScriptBlock }
-            Process  { $Splat['Process']  = $ScriptBlock }
-        }
-
-        $Nodes | ForEach-Object @Splat
     }
 
     end {

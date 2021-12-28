@@ -30,10 +30,14 @@
         }
     )
     FunctionsToExport = @(
-        'Invoke-LabBuild',
+        'Export-DSCConfigurationData',
+        'Get-DSCLabConfiguration',
+        'Invoke-DscLab',
+        'Invoke-HyperVHostDscConfig',
         'New-LabVmCertificate',
         'New-LabVmVhd',
-        'Remove-Lab',
+        'Remove-DscLab',
+        'Set-DSCLabConfiguration',
         'Update-Mof'
     )
     PrivateData = @{

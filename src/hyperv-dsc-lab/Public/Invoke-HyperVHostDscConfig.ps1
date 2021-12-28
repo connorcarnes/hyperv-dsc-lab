@@ -1,6 +1,6 @@
 ﻿<#
     .SYNOPSIS
-    Short descripton
+"https://www.google.com/search?as_q=words&as_epq=exact&as_oq=any&as_eq=none&as_nlo=startrange&as_nhi=endrange&lr=&cr=&as_qdr=d&as_sitesearch=domain&as_occt=any&safe=images&as_filetype=&tbs=" -split '&'
 
     .DESCRIPTION
     Long description
@@ -22,21 +22,23 @@
     .LINK
     Link to other documentation
 #>
-function Get-LabConfiguration {
+function Invoke-HyperVHostDscConfig {
     [CmdletBinding()]
-    param ()
+    param (
+        [Parameter()]
+        [ParameterType]$ParameterName
+    )
+
     begin {
         Write-Verbose "$($MyInvocation.MyCommand.Name) :: BEGIN :: $(Get-Date)"
     }
 
     process {
-        [PSCustomObject]@{
-            CertificateExportPath = "C:\virt\certs"
-            VMHostVHDPath         = (Get-VMHost).VirtualHardDiskPath
-            MofExportPath         = "C:\virt\mofs"
-            SetupScriptPath       = "C:\code\hyperv-dsc-lab\src\hyperv-dsc-lab\Resources\Setup.ps1"
-            BaseVHDPath           = "C:\virt\vhds\gold-imgs\test.vhdx"
+        $Session = New-PSSession -UseWindowsPowerShell
+        Invoke-Command -Session $Session -ScriptBlock {
+            & C:\code\hyperv-dsc-lab\src\hyperv-dsc-lab\Resources\host\HyperVHost.ps1
         }
+        $Session | Remove-PSSession
     }
 
     end {
