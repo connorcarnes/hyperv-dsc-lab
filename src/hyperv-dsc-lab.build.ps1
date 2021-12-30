@@ -207,7 +207,7 @@ Add-BuildTask AnalyzeTests -After Analyze {
     }
 } #AnalyzeTests
 
-#Synopsis: Analyze scripts to verify if they adhere to desired coding format (Stroustrup / OTBS / Allman)
+<#Synopsis: Analyze scripts to verify if they adhere to desired coding format (Stroustrup / OTBS / Allman)
 Add-BuildTask FormattingCheck {
 
     $scriptAnalyzerParams = @{
@@ -230,7 +230,7 @@ Add-BuildTask FormattingCheck {
         Write-Build Green '      ...Formatting Analyze Complete!'
     }
 } #FormattingCheck
-
+#>
 #Synopsis: Invokes all Pester Unit Tests in the Tests\Unit folder (if it exists)
 Add-BuildTask Test {
 

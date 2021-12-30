@@ -1,8 +1,6 @@
-﻿Configuration VmConfig
-{
+﻿Configuration VmConfig {
     [CmdletBinding()]
-    param
-    (
+    param (
         [pscredential]$LocalCredential,
         [pscredential]$DomainCredential
     )
@@ -13,15 +11,13 @@
     Import-DscResource -ModuleName 'PSDscResources'
     Import-DscResource -ModuleName 'ActiveDirectoryDsc'
 
-    node $AllNodes.NodeName
-    {
+    node $AllNodes.NodeName {
         LocalConfigurationManager {
-            CertificateID        = (Get-ChildItem Cert:\LocalMachine\My | Where-Object { $_.Subject -eq "CN=$($Node.NodeName)-DSC-Lab" }).Thumbprint
-            RebootNodeIfNeeded   = $true
+            CertificateID      = (Get-ChildItem Cert:\LocalMachine\My | Where-Object { $_.Subject -eq "CN=$($Node.NodeName)-DSC-Lab" }).Thumbprint
+            RebootNodeIfNeeded = $true
         }
 
-        PackageManagementSource SourceRepository
-        {
+        PackageManagementSource SourceRepository {
             Ensure             = "Present"
             Name               = "Nuget"
             ProviderName       = "Nuget"
@@ -62,55 +58,50 @@
             DependsOn = "[PackageManagementSource]PSGallery"
         }
 
-        NetIPInterface DisableDhcp
-        {
+        NetIPInterface DisableDhcp {
             InterfaceAlias = 'Ethernet'
             AddressFamily  = 'IPv4'
             Dhcp           = 'Disabled'
             DependsOn      = "[PackageManagement]NetworkingDsc"
         }
 
-        IPAddress NewIPv4Address
-        {
+        IPAddress NewIPv4Address {
             IPAddress      = $Node.IPAddress
             InterfaceAlias = 'Ethernet'
             AddressFamily  = 'IPV4'
             DependsOn      = "[PackageManagement]NetworkingDsc"
         }
 
-        DefaultGatewayAddress SetDefaultGateway
-        {
+        DefaultGatewayAddress SetDefaultGateway {
             Address        = $DefaultGateway
             InterfaceAlias = 'Ethernet'
             AddressFamily  = 'IPv4'
             DependsOn      = "[PackageManagement]NetworkingDsc"
         }
 
-        NetAdapterBinding DisableIPv6
-        {
+        NetAdapterBinding DisableIPv6 {
             InterfaceAlias = 'Ethernet'
             ComponentId    = 'ms_tcpip6'
             State          = 'Disabled'
-			DependsOn      = "[PackageManagement]NetworkingDsc"
+            DependsOn      = "[PackageManagement]NetworkingDsc"
         }
 
-        DnsServerAddress DnsServerAddress
-        {
+        DnsServerAddress DnsServerAddress {
             Address        = $Node.DNSAddresses
             InterfaceAlias = 'Ethernet'
             AddressFamily  = 'IPv4'
             Validate       = $false
-			DependsOn      = "[PackageManagement]NetworkingDsc"
+            DependsOn      = "[PackageManagement]NetworkingDsc"
         }
     }
 
-    Node $AllNodes.Where{$_.Role -eq 'Domain Controller'}.NodeName
+    Node $AllNodes.Where{ $_.Role -eq 'Domain Controller' }.NodeName
     {
         PackageManagement ActiveDirectoryDsc
         {
-            Ensure    = "Present"
-            Name      = "ActiveDirectoryDsc"
-            Source    = "PSGallery"
+            Ensure = "Present"
+            Name   = "ActiveDirectoryDsc"
+            Source = "PSGallery"
         }
 
         WindowsFeature 'ADDS' {
@@ -119,8 +110,8 @@
         }
 
         WindowsFeature 'RSAT' {
-            Name      = 'RSAT-AD-PowerShell'
-            Ensure    = 'Present'
+            Name   = 'RSAT-AD-PowerShell'
+            Ensure = 'Present'
         }
     }
 
