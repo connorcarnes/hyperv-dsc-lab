@@ -41,8 +41,6 @@ function Update-Mof {
     }
 
     process {
-        $Config  = Get-DSCLabConfiguration
-
         $VMs | ForEach-Object -Parallel {
             $Session        = New-PSSession $_ -Credential $Using:Credential
             $MofContent     = Get-Content "$($Using:Config.MofPath)\$_.mof" -Raw

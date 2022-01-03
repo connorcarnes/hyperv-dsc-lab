@@ -27,11 +27,10 @@ function New-LabVMVHD {
     }
 
     process {
-        $Config = Get-DSCLabConfiguration
-        $VMVHDFolder = "$($Config.VHDPath)\`$_"
-        $VMVHDPath = "$VMVHDFolder\`$_.vhdx"
-        $BaseVHDPath = $Config.BaseVHDPath
-        $SetupScriptPath = $Config.SetupScriptPath
+        $VMVHDFolder     = "$($LAB_CONFIG.VHDPath)\`$_"
+        $VMVHDPath       = "$VMVHDFolder\`$_.vhdx"
+        $BaseVHDPath     = $LAB_CONFIG.BaseVHDPath
+        $SetupScriptPath = $LAB_CONFIG.SetupScriptPath
 
         $ScriptBlock = @"
 if (-not (Test-Path $VMVHDFolder)) {

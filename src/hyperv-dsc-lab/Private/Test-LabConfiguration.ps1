@@ -27,7 +27,7 @@ function Test-LabConfiguration {
 
     process {
         [System.Collections.ArrayList]$MissingProperties = @()
-        $REQ_DSC_LAB_CONFIG_PROPS.ForEach{
+        $REQ_CONFIG_PROPS.ForEach{
             if ([string]::IsNullOrEmpty($LabConfigurationObject.$_)) {
                 [void]($MissingProperties.Add($_))
             }

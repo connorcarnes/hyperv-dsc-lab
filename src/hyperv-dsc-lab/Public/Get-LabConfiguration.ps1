@@ -1,26 +1,31 @@
 ﻿<#
     .SYNOPSIS
-    Short descripton
+    Gets the lab configuration.
 
     .DESCRIPTION
-    Long description
+    Gets the lab configuration. Lab configuration must be stored as a JSON file.
 
-    .PARAMETER ParameterName
-    Explain the parameter
+    .PARAMETER LabConfigurationFilePath
+    Path to the JSON file containing the lab configuration. Default value is "$($MyInvocation.MyCommand.Module.ModuleBase)\LabConfiguration.json".
 
     .EXAMPLE
-    Example usage
-    Output
-    Explanation of what the example does
+    Get-LabConfiguration
+
+    Other                    : {DC00IP, DefaultGateway, DC01IP}
+    VMConfiguration          : C:\code\hyperv-dsc-lab\src\hyperv-dsc-lab\Resources\vms\VmConfig.ps1
+    VHDPath                  : D:\virt\vhds
+    SetupScriptPath          : C:\code\hyperv-dsc-lab\src\hyperv-dsc-lab\Resources\Setup.ps1
+    HostConfiguration        : C:\code\hyperv-dsc-lab\src\hyperv-dsc-lab\Resources\host\HyperVHost.ps1
+    LabConfigurationFilePath : C:\code\hyperv-dsc-lab\src\hyperv-dsc-lab\LabConfiguration.json
+    MofPath                  : D:\virt\mofs
+    VMConfigurationDataPath  : C:\code\hyperv-dsc-lab\src\hyperv-dsc-lab\Resources\vms\VMConfigurationData.psd1
+    CertificatePath          : D:\virt\certs
+    BaseVHDPath              : D:\virt\vhds\base-vhds\win22.vhdx
+
+    Returns lab configuration stored in the default location.
 
     .OUTPUTS
-    Output (if any)
-
-    .NOTES
-    General notes
-
-    .LINK
-    Link to other documentation
+    [PSObject]
 #>
 function Get-LabConfiguration {
     [CmdletBinding()]
@@ -35,7 +40,7 @@ function Get-LabConfiguration {
 
     process {
         if (-not (Test-Path $LabConfigurationFilePath)) {
-            Write-Warning "DSC lab configuration file not found at $LabConfigurationFilePath. Use Set-LabConfiguration to create one."
+            Write-Warning "Lab configuration file not found at $LabConfigurationFilePath. Use Set-LabConfiguration to create one."
             return
         }
 

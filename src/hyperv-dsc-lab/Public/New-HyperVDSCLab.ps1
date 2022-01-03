@@ -36,27 +36,25 @@ function New-HyperVDSCLab {
     }
 
     process {
-        $Config = Get-DSCLabConfiguration
-
         Remove-LabVM -VM $VMs
 
         New-LabVMVHD -VM $VMs
 
         $Splat = @{
-            ConfigurationFile = $Config.HostConfiguration
-            OutputPath        = $Config.MofPath
+            ConfigurationFile = $LAB_CONFIG.HostConfiguration
+            OutputPath        = $LAB_CONFIG.MofPath
         }
         Initialize-DSCConfiguration @Splat
-        Start-DscConfiguration -ComputerName 'localhost' -Path $config.MofPath
+        Start-DscConfiguration -ComputerName 'localhost' -Path $LAB_CONFIG.MofPath
 
         Wait-LabVM -VM $VMs -LocalCredential $LocalCredential
 
         New-LabVMCertificate -VM $VMs -Credential $LocalCredential
 
         $Splat = @{
-            ConfigurationFile = $Config.VMConfiguration
-            ConfigurationData = $Config.VMConfigurationDataPath
-            OutputPath        = $Config.MofPath
+            ConfigurationFile = $LAB_CONFIG.VMConfiguration
+            ConfigurationData = $LAB_CONFIG.VMConfigurationDataPath
+            OutputPath        = $LAB_CONFIG.MofPath
             LocalCredential   = $LocalCredential
             DomainCredential  = $DomainCredential
         }

@@ -50,23 +50,23 @@ function Expand-ConfigurationDataTemplate {
     }
 
     process {
-        $LabConfiguration = Get-DSCLabConfiguration
+        $LAB_CONFIG = Get-DSCLabConfiguration
 
         Write-Verbose "Setting mandatory property variables."
-        $REQ_DSC_LAB_CONFIG_PROPS.ForEach{
-            Write-Verbose "Setting variable $_ to $($LabConfiguration.$_)"
-            Set-Variable -Name $_ -Value $LabConfiguration.$_
+        $REQ_CONFIG_PROPS.ForEach{
+            Write-Verbose "Setting variable $_ to $($LAB_CONFIG.$_)"
+            Set-Variable -Name $_ -Value $LAB_CONFIG.$_
         }
 
-        if ($LabConfiguration.Other) {
+        if ($LAB_CONFIG.Other) {
             Write-Verbose "Setting other property variables."
-            $OtherProperties = ($LabConfiguration.Other |
+            $OtherProperties = ($LAB_CONFIG.Other |
                 Get-Member |
                 Where-Object {$_.MemberType -eq 'NoteProperty'}
             ).Name
             $OtherProperties.ForEach{
-                Write-Verbose "Setting variable $_ to $($LabConfiguration.Other.$_)"
-                Set-Variable -Name $_ -Value $LabConfiguration.Other.$_
+                Write-Verbose "Setting variable $_ to $($LAB_CONFIG.Other.$_)"
+                Set-Variable -Name $_ -Value $LAB_CONFIG.Other.$_
             }
         }
 

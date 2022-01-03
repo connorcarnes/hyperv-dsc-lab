@@ -31,7 +31,7 @@ InModuleScope 'hyperv-dsc-lab' {
         # Need to revist this. It should loop through required config props and check if they are set, but
         # -ErrorVariable seems to not be working for some reason.
         #Context 'Error' {
-        #    It 'errors if <_> is not set' -ForEach $REQ_DSC_LAB_CONFIG_PROPS {
+        #    It 'errors if <_> is not set' -ForEach $REQ_CONFIG_PROPS {
         #        $TempJson    = $VALID_CONFIG_JSON | ConvertFrom-Json
         #        $TempJson.$_ = ''
         #        $TempJson    = $TempJson | ConvertTo-Json

@@ -1,16 +1,16 @@
 {
   "Other": {
-    "DefaultGateway": null,
-    "DC01IP": null,
-    "DC00IP": null
+    "DC00IP": "172.26.16.10",
+    "DefaultGateway": "172.26.16.1",
+    "DC01IP": "172.26.16.11"
   },
-  "SetupScriptPath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\Setup.ps1",
-  "LabConfigurationFilePath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\LabConfiguration.json",
-  "VMConfigurationDataPath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\vms\\VMConfigurationData.psd1",
-  "HostConfiguration": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\host\\HyperVHost.ps1",
-  "BaseVHDPath": "D:\\virt\\vhds\\base-vhds\\win22.vhdx",
-  "MofPath": "D:\\virt\\mofs",
   "VMConfiguration": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\vms\\VmConfig.ps1",
+  "VHDPath": "D:\\virt\\vhds",
+  "SetupScriptPath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\Setup.ps1",
+  "HostConfiguration": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\host\\HyperVHost.ps1",
+  "LabConfigurationFilePath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\LabConfiguration.json",
+  "MofPath": "D:\\virt\\mofs",
+  "VMConfigurationDataPath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\vms\\VMConfigurationData.psd1",
   "CertificatePath": "D:\\virt\\certs",
-  "VHDPath": "D:\\virt\\vhds"
+  "BaseVHDPath": "D:\\virt\\vhds\\base-vhds\\win22.vhdx"
 }

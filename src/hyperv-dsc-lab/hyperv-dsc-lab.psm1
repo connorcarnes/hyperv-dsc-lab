@@ -30,23 +30,32 @@ foreach ($file in @($public + $private)) {
     }
 }
 
-$REQ_DSC_LAB_CONFIG_PROPS = @(
-    "CertificatePath",
-    "VHDPath",
-    "MofPath",
-    "SetupScriptPath",
-    "BaseVHDPath",
-    "VMConfigurationDataPath",
-    "VMConfiguration",
-    "HostConfiguration"
-)
 $VarParams = @{
-    'Name'        = 'VISIONAIRE_PATH'
-    'Value'       =  $REQ_DSC_LAB_CONFIG_PROPS
-    'Description' = 'Path where visio documents and account device lists will be stored.'
-    'Scope'       = 'Script'
-    'Force'       = $True
-    'Option'      = 'readonly'
+    Name        = 'REQ_CONFIG_PROPS'
+    Description = 'Required configuration properties'
+    Scope       = 'Script'
+    Force       = $True
+    Option      = 'readonly'
+    Value       = @(
+        "CertificatePath",
+        "VHDPath",
+        "MofPath",
+        "SetupScriptPath",
+        "BaseVHDPath",
+        "VMConfigurationDataPath",
+        "VMConfiguration",
+        "HostConfiguration"
+    )
+}
+Set-Variable @VarParams
+
+$VarParams = @{
+    Name        = 'LAB_CONFIG'
+    Description = 'Required configuration properties'
+    Scope       = 'Script'
+    Force       = $True
+    Option      = 'readonly'
+    Value       = Get-LabConfiguration
 }
 Set-Variable @VarParams
 

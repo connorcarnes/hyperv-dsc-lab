@@ -39,8 +39,6 @@ function Remove-LabVM {
     }
 
     process {
-        $Config = Get-DSCLabConfiguration
-
         Write-Verbose "Stopping VM(s): $($VMs -join ', ')"
         $VMs | Stop-VM -Force -ErrorAction 'SilentlyContinue' -WarningAction 'SilentlyContinue'
 
@@ -52,7 +50,7 @@ function Remove-LabVM {
         $VMs | ForEach-Object -Process {
             $VM = $_
 
-            Get-ChildItem -Path $Config.CertificatePath -Filter "$VM-DSC-Lab-PubKey.cer" |
+            Get-ChildItem -Path $LAB_CONFIG.CertificatePath -Filter "$VM-DSC-Lab-PubKey.cer" |
                 ForEach-Object {[void]($ItemsToRemove.Add($_.PSPath))}
 
             Get-ChildItem -Path "Cert:\LocalMachine\My" |
@@ -60,7 +58,7 @@ function Remove-LabVM {
                 ForEach-Object {[void]($ItemsToRemove.Add($_.PSPath))}
 
             if (-not $SkipVHDremoval) {
-                Get-ChildItem "$($Config.VHDPath)\$VM" |
+                Get-ChildItem "$($LAB_CONFIG.VHDPath)\$VM" |
                     ForEach-Object {[void]($ItemsToRemove.Add($_.PSPath))}
             }
         }

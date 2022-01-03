@@ -47,8 +47,7 @@ function New-LabVMCertificate {
     }
 
     process {
-        $Config   = Get-DSCLabConfiguration
-        $CertPath = $Config.CertificatePath
+        $CertPath = $LAB_CONFIG.CertificatePath
         if (-not (Test-Path $CertPath)) {
             Write-Verbose "Creating certificate directory: $CertPath"
             [void](New-Item -Path $CertPath -ItemType Directory)
