@@ -37,7 +37,9 @@ function Test-LabConfiguration {
         }
     }
 
-    # Error if missing required properties
+    # Error if missing required properties. Error is non terminating in the context of running this function
+    # interactively and when running Set-LabConfiguration. Other functions should treat this as a terminating
+    # error when appropriate.
     if ($MissingProperties.Count -ne 0) {
         Write-Error "The following required lab configuration properties are not set: $($MissingProperties -join ', ')"
     }
