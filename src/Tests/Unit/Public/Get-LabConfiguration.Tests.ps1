@@ -21,7 +21,7 @@ InModuleScope 'hyperv-dsc-lab' {
             It 'should warn and return if the configuration file is not found' {
                 Mock Test-Path -MockWith { $false }
                 $Message = "DSC lab configuration file not found at C:\FakePath. Use Set-LabConfiguration to create one."
-                Get-LabConfiguration -LabConfigurationFilePath 'C:\FakePath' -WarningVariable Warning
+                Get-LabConfiguration -WarningVariable Warning
                 $Warning | Should -Be $Message
             }
         }

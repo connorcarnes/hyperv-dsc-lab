@@ -24,8 +24,7 @@ function Test-LabConfiguration {
         throw "$LabConfigurationFilePath does not exist. Run Set-LabConfiguration and try again."
     }
 
-    if (-not $LAB_CONFIG)
-    {
+    if (-not $LAB_CONFIG) {
         throw "`$LAB_CONFIG script variable is not present. Run Set-LabConfiguration, ensure $LabConfigurationFilePath exists and try again."
     }
 
