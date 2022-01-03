@@ -25,8 +25,7 @@
             InstallationPolicy = "Trusted"
         }
 
-        PackageManagementSource PSGallery
-        {
+        PackageManagementSource PSGallery {
             Ensure             = "Present"
             Name               = "PSGallery"
             ProviderName       = "PowerShellGet"
@@ -34,24 +33,21 @@
             InstallationPolicy = "Trusted"
         }
 
-        PackageManagement PSDscResources
-        {
+        PackageManagement PSDscResources {
             Ensure    = "Present"
             Name      = "PSDscResources"
             Source    = "PSGallery"
             DependsOn = "[PackageManagementSource]PSGallery"
         }
 
-        PackageManagement ComputerManagementDsc
-        {
+        PackageManagement ComputerManagementDsc {
             Ensure    = "Present"
             Name      = "ComputerManagementDsc"
             Source    = "PSGallery"
             DependsOn = "[PackageManagementSource]PSGallery"
         }
 
-        PackageManagement NetworkingDsc
-        {
+        PackageManagement NetworkingDsc {
             Ensure    = "Present"
             Name      = "NetworkingDsc"
             Source    = "PSGallery"
@@ -95,10 +91,8 @@
         }
     }
 
-    Node $AllNodes.Where{ $_.Role -eq 'Domain Controller' }.NodeName
-    {
-        PackageManagement ActiveDirectoryDsc
-        {
+    Node $AllNodes.Where{ $_.Role -eq 'Domain Controller' }.NodeName {
+        PackageManagement ActiveDirectoryDsc {
             Ensure = "Present"
             Name   = "ActiveDirectoryDsc"
             Source = "PSGallery"
@@ -115,8 +109,7 @@
         }
     }
 
-    Node DC00
-    {
+    Node DC00 {
         Computer DC00 {
             Name = 'DC00'
         }
@@ -129,8 +122,7 @@
         }
     }
 
-    Node DC01
-    {
+    Node DC01 {
         WaitForADDomain 'WaitForADDomain' {
             DomainName              = $ConfigurationData.DomainInfo.DomainName
             Credential              = $DomainCredential

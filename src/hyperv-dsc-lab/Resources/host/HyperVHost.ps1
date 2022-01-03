@@ -1,4 +1,4 @@
-﻿configuration HyperVHost {
+﻿Configuration HyperVHost {
     param (
         [System.String[]]
         $NodeName = 'localhost',
