@@ -10,8 +10,6 @@ Import-Module $PathToManifest -Force
 . ([System.IO.Path]::Combine('..',  'UnitTestData.ps1'))
 
 InModuleScope 'hyperv-dsc-lab' {
-    $command = $myInvocation
-    $root = $PSScriptRoot
     Describe 'Expand-ConfigurationDataTemplate' -Tag Unit {
         BeforeAll {
             $WarningPreference     = 'SilentlyContinue'
@@ -19,7 +17,6 @@ InModuleScope 'hyperv-dsc-lab' {
             Mock Test-LabConfiguration -MockWith {$true}
         }
         Context 'Error' {
-
             It 'should error if .psd1 fails to load' {
                 Mock Set-Variable -MockWith {''}
                 Mock Get-Content -MockWith {''}
