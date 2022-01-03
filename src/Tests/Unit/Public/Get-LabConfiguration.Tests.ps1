@@ -12,7 +12,7 @@ Import-Module $PathToManifest -Force
 #-------------------------------------------------------------------------
 
 InModuleScope 'hyperv-dsc-lab' {
-    Describe 'Get-DSCLabConfiguration' -Tag Unit {
+    Describe 'Get-LabConfiguration' -Tag Unit {
         BeforeAll {
             # Import UnitTestData.ps1
             # . ([System.IO.Path]::Combine('..', "UnitTestData.ps1"))

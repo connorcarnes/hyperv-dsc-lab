@@ -7,7 +7,7 @@
 
     - VM's VHD(s)
     - VM's virtual machine files
-    - Certificates exported to cert:\localmachine\my and CertificatePath of Get-DSCLabConfiguration
+    - Certificates exported to cert:\localmachine\my and CertificatePath of Get-LabConfiguration
 
     .PARAMETER VMs
     Array of Lab VMs to delete.

@@ -1,4 +1,4 @@
-﻿$TEST_CONFIG = [PSCustomObject]@{
+﻿$Script:TEST_CONFIG = [PSCustomObject]@{
     Other                   = @{KeyOne='ValueOne'; KeyTwo='ValueTwo'}
     BaseVHDPath             = 'C:\Path\BaseVHD.vhdx'
     CertificatePath         = 'C:\Path'
@@ -10,7 +10,7 @@
     HostConfiguration       = 'C:\Path\Configuration.ps1'
 }
 
-$VALID_CONFIG_JSON = @"
+$Script:VALID_CONFIG_JSON = @"
 {
     "Other": {
       "KeyTwo": "ValueTwo",
@@ -27,7 +27,7 @@ $VALID_CONFIG_JSON = @"
 }
 "@
 
-$INVALID_CONFIG_JSON = @"
+$Script:INVALID_CONFIG_JSON = @"
 {
     "Other": {
       "KeyTwo": "ValueTwo",
