@@ -1,9 +1,15 @@
 ﻿<#
     .SYNOPSIS
-    Short descripton
+    Updates and validates the lab configuration.
 
     .DESCRIPTION
-    Long description
+    Updates and validates the lab configuration. Actions taken:
+
+    - Creates LabConfiguration.json in the base module path if it doesn't exist.
+    - Updates the lab configuration with values supplied in the parameters. This includes updating LabConfiguration.json as well as the
+      script variable $LAB_CONFIG.
+    - Validates the lab configuration and returns relevant errors if validation fails.
+    - Returns the updated lab configuration.
 
     .PARAMETER ParameterName
     Explain the parameter
@@ -14,7 +20,7 @@
     Explanation of what the example does
 
     .OUTPUTS
-    Output (if any)
+    [PSObject]
 
     .NOTES
     General notes
@@ -25,8 +31,6 @@
 function Set-LabConfiguration {
     [CmdletBinding()]
     param (
-        [Parameter(Position = 0)]
-        [string]$LabConfigurationFilePath = "$($MyInvocation.MyCommand.Module.ModuleBase)\LabConfiguration.json",
         [Parameter(HelpMessage = "Certificate public keys from guest VMs will be exported here.")]
         [String]$CertificatePath,
         [Parameter(HelpMessage = "VHDs created for lab VMs will be saved here.")]
@@ -52,40 +56,55 @@ function Set-LabConfiguration {
     }
 
     process {
+        $LabConfigurationFilePath = "$($MyInvocation.MyCommand.Module.ModuleBase)\LabConfiguration.json"
         if (-not (Test-Path $LabConfigurationFilePath)) {
             Write-Verbose "Configuration file not found at $LabConfigurationFilePath. Creating new configuration file."
             [void](New-Item -Path $LabConfigurationFilePath -ItemType File)
         }
 
-        $Configuration = Get-LabConfiguration -LabConfigurationFilePath $LabConfigurationFilePath -ErrorAction 'SilentlyContinue'
-
-        if (-not $Configuration) {
+        if (-not $LAB_CONFIG) {
             Write-Verbose "Configuration file is empty, creating blank config object"
-            $Configuration = [PSCustomObject]@{}
+            $CurrentConfig = [PSCustomObject]@{}
+        }
+        else {
+            $CurrentConfig = $LAB_CONFIG
         }
 
+        # Add all common parameters to an array so we can ignore them in the loop below
         [System.Collections.ArrayList]$CommonParams = @()
         [System.Management.Automation.PSCmdlet]::CommonParameters | ForEach-Object { [void]($CommonParams.Add($_)) }
         [System.Management.Automation.PSCmdlet]::OptionalCommonParameters | ForEach-Object { [void]($CommonParams.Add($_)) }
+
         foreach ($Key in $PSBoundParameters.Keys) {
             if ($Key -in $CommonParams) {
                 Write-Verbose "Skipping common parameter $Key"
             }
-            elseif (($Configuration.$Key) -and ($Configuration.$Key -ne $PSBoundParameters.$Key)) {
-                Write-Verbose "Updating $Key from $($Configuration.$Key) to $($PSBoundParameters.$Key)"
-                $Configuration.$Key = $PSBoundParameters.$Key
+            elseif (($CurrentConfig.$Key) -and ($CurrentConfig.$Key -ne $PSBoundParameters.$Key)) {
+                Write-Verbose "Updating $Key from $($CurrentConfig.$Key) to $($PSBoundParameters.$Key)"
+                $CurrentConfig.$Key = $PSBoundParameters.$Key
             }
             else {
                 Write-Verbose "Setting $Key to $($PSBoundParameters.$Key)"
-                $Configuration | Add-Member -NotePropertyName $Key -NotePropertyValue $PSBoundParameters.$Key -Force
+                $CurrentConfig | Add-Member -NotePropertyName $Key -NotePropertyValue $PSBoundParameters.$Key -Force
             }
         }
 
-        $Configuration | ConvertTo-Json | Out-File $LabConfigurationFilePath -Force
+        # Save updated configuration as JSON
+        $CurrentConfig | ConvertTo-Json | Out-File $LabConfigurationFilePath -Force
 
-        Test-LabConfiguration $Configuration
+        # Set the script variable
+        $VarParams = @{
+            Name        = 'LAB_CONFIG'
+            Description = 'Lab configuration object'
+            Scope       = 'Script'
+            Force       = $True
+            Option      = 'readonly'
+            Value       = $CurrentConfig
+        }
+        Set-Variable @VarParams
 
-        $Configuration
+        Get-LabConfiguration
+        Test-LabConfiguration
     }
 
     end {

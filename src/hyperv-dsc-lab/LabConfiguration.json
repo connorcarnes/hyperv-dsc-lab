@@ -4,13 +4,13 @@
     "DefaultGateway": "172.26.16.1",
     "DC01IP": "172.26.16.11"
   },
-  "VMConfiguration": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\vms\\VmConfig.ps1",
-  "VHDPath": "D:\\virt\\vhds",
+  "LabConfigurationFilePath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\LabConfiguration.json",
   "SetupScriptPath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\Setup.ps1",
   "HostConfiguration": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\host\\HyperVHost.ps1",
-  "LabConfigurationFilePath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\LabConfiguration.json",
+  "BaseVHDPath": "D:\\virt\\vhds\\base-vhds\\win22.vhdx",
   "MofPath": "D:\\virt\\mofs",
   "VMConfigurationDataPath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\vms\\VMConfigurationData.psd1",
+  "VMConfiguration": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\vms\\VmConfig.ps1",
   "CertificatePath": "D:\\virt\\certs",
-  "BaseVHDPath": "D:\\virt\\vhds\\base-vhds\\win22.vhdx"
+  "VHDPath": "D:\\virt\\vhds"
 }

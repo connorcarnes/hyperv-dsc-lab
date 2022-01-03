@@ -3,10 +3,9 @@
     Gets the lab configuration.
 
     .DESCRIPTION
-    Gets the lab configuration. Lab configuration must be stored as a JSON file.
+    Gets the lab configuration. Lab configuration must be stored as a JSON file named LabConfiguration.json in the base path of the module.
 
-    .PARAMETER LabConfigurationFilePath
-    Path to the JSON file containing the lab configuration. Default value is "$($MyInvocation.MyCommand.Module.ModuleBase)\LabConfiguration.json".
+    You can find the base path of the module with the following command: (Get-Module hyperv-dsc-lab).ModuleBase
 
     .EXAMPLE
     Get-LabConfiguration
@@ -22,23 +21,21 @@
     CertificatePath          : D:\virt\certs
     BaseVHDPath              : D:\virt\vhds\base-vhds\win22.vhdx
 
-    Returns lab configuration stored in the default location.
+    Returns the lab configuration.
 
     .OUTPUTS
     [PSObject]
 #>
 function Get-LabConfiguration {
     [CmdletBinding()]
-    param (
-        [Parameter(Position=0)]
-        [string]$LabConfigurationFilePath = "$($MyInvocation.MyCommand.Module.ModuleBase)\LabConfiguration.json"
-    )
+    param ()
 
     begin {
         Write-Verbose "$($MyInvocation.MyCommand.Name) :: BEGIN :: $(Get-Date)"
     }
 
     process {
+        $LabConfigurationFilePath = "$($MyInvocation.MyCommand.Module.ModuleBase)\LabConfiguration.json"
         if (-not (Test-Path $LabConfigurationFilePath)) {
             Write-Warning "Lab configuration file not found at $LabConfigurationFilePath. Use Set-LabConfiguration to create one."
             return

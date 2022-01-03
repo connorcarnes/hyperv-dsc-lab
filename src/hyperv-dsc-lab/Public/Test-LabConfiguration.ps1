@@ -1,25 +1,23 @@
 ﻿<#
     .SYNOPSIS
-    Placeholder
+    Validates the lab configuration.
 
     .DESCRIPTION
-    Placeholder
-
-    .PARAMETER LabConfigurationFilePath
-    Path to JSON lab configuration file.
+    Validates the lab configuration. Returns True if the lab configuration is valid. Returns an error message if required properties are missing.
 
     .EXAMPLE
-    Example
+    Test-LabConfiguration
+
+    True
+
+    Validates the lab configuration.
 
     .OUTPUTS
-    [void]
+    [bool]
 #>
 function Test-LabConfiguration {
     [CmdletBinding()]
-    param (
-        [Parameter(Position=0)]
-        [PSObject]$LabConfigurationObject
-    )
+    param ()
 
     begin {
         Write-Verbose "$($MyInvocation.MyCommand.Name) :: BEGIN :: $(Get-Date)"
@@ -28,13 +26,16 @@ function Test-LabConfiguration {
     process {
         [System.Collections.ArrayList]$MissingProperties = @()
         $REQ_CONFIG_PROPS.ForEach{
-            if ([string]::IsNullOrEmpty($LabConfigurationObject.$_)) {
+            if ([string]::IsNullOrEmpty($LAB_CONFIG.$_)) {
                 [void]($MissingProperties.Add($_))
             }
         }
 
         if ($MissingProperties.Count -ne 0) {
             Write-Error "The following required lab configuration properties are not set: $($MissingProperties -join ', ')"
+        }
+        else {
+            $true
         }
     }
 

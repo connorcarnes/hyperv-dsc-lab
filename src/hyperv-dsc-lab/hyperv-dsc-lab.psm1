@@ -51,7 +51,7 @@ Set-Variable @VarParams
 
 $VarParams = @{
     Name        = 'LAB_CONFIG'
-    Description = 'Required configuration properties'
+    Description = 'Lab configuration object'
     Scope       = 'Script'
     Force       = $True
     Option      = 'readonly'

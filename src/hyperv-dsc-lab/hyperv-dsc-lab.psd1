@@ -38,6 +38,7 @@
         'New-LabVMVHD',
         'Remove-LabVM',
         'Set-LabConfiguration',
+        'Test-LabConfiguration',
         'Update-Mof'
     )
     PrivateData = @{

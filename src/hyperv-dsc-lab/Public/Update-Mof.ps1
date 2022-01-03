@@ -38,13 +38,14 @@ function Update-Mof {
 
     begin {
         Write-Verbose "$($MyInvocation.MyCommand.Name) :: BEGIN :: $(Get-Date)"
+        Test-LabConfiguration -ErrorAction 'Stop'
     }
 
     process {
         $VMs | ForEach-Object -Parallel {
             $Session        = New-PSSession $_ -Credential $Using:Credential
-            $MofContent     = Get-Content "$($Using:Config.MofPath)\$_.mof" -Raw
-            $MetaMofContent = Get-Content "$($Using:Config.MofPath)\$_.meta.mof" -Raw
+            $MofContent     = Get-Content "$($Using:LAB_CONFIG.MofPath)\$_.mof" -Raw
+            $MetaMofContent = Get-Content "$($Using:LAB_CONFIG.MofPath)\$_.meta.mof" -Raw
             Invoke-Command -Session $Session -ArgumentList $MofContent,$MetaMofContent -ScriptBlock {
                 param($MofContent,$MetaMofContent)
                 Set-Content -Path "C:\Windows\System32\Configuration\Pending.mof"    -Value $MofContent     -Force
