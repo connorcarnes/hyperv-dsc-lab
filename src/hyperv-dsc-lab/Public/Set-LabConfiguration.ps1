@@ -104,7 +104,7 @@ function Set-LabConfiguration {
         Set-Variable @VarParams
 
         Get-LabConfiguration
-        Test-LabConfiguration
+        [void](Test-LabConfiguration)
     }
 
     end {

@@ -33,7 +33,7 @@ function New-HyperVDSCLab {
 
     begin {
         Write-Verbose "$($MyInvocation.MyCommand.Name) :: BEGIN :: $(Get-Date)"
-        Test-LabConfiguration -ErrorAction 'Stop'
+        [void](Test-LabConfiguration -ErrorAction 'Stop')
     }
 
     process {
@@ -53,11 +53,13 @@ function New-HyperVDSCLab {
         New-LabVMCertificate -VM $VMs -Credential $LocalCredential
 
         $Splat = @{
-            ConfigurationFile = $LAB_CONFIG.VMConfiguration
-            ConfigurationData = $LAB_CONFIG.VMConfigurationDataPath
-            OutputPath        = $LAB_CONFIG.MofPath
-            LocalCredential   = $LocalCredential
-            DomainCredential  = $DomainCredential
+            ConfigurationFile  = $LAB_CONFIG.VMConfiguration
+            OutputPath         = $LAB_CONFIG.MofPath
+            ConfigurationSplat = @{
+                ConfigurationData = $LAB_CONFIG.VMConfigurationDataPath
+                LocalCredential   = $LocalCredential
+                DomainCredential  = $DomainCredential
+            }
         }
         Initialize-DSCConfiguration @Splat
 

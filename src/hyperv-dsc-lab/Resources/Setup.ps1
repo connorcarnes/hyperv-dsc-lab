@@ -1,5 +1,9 @@
 ﻿Set-SConfig -AutoLaunch `$false
-Get-PackageProvider -Name nuget -Force
+
+Install-PackageProvider Nuget -Force
+Install-Module -Name PowerShellGet -Force
+Update-Module -Name PowerShellGet
+
 @(
     'PSDscResources'
     'ComputerManagementDsc'

@@ -11,6 +11,6 @@
   "MofPath": "D:\\virt\\mofs",
   "VMConfigurationDataPath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\vms\\VMConfigurationData.psd1",
   "VMConfiguration": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\vms\\VmConfig.ps1",
-  "CertificatePath": "D:\\virt\\certs",
-  "VHDPath": "D:\\virt\\vhds"
+  "VHDPath": "D:\\virt\\vhds",
+  "CertificatePath": "D:\\virt\\certs"
 }

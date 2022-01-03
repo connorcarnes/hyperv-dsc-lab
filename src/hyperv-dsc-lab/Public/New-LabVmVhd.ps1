@@ -24,7 +24,7 @@ function New-LabVMVHD {
 
     begin {
         Write-Verbose "$($MyInvocation.MyCommand.Name) :: BEGIN :: $(Get-Date)"
-        Test-LabConfiguration -ErrorAction 'Stop'
+        [void](Test-LabConfiguration -ErrorAction 'Stop')
     }
 
     process {

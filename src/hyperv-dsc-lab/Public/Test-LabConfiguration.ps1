@@ -19,39 +19,29 @@ function Test-LabConfiguration {
     [CmdletBinding()]
     param ()
 
-    begin {
-        Write-Verbose "$($MyInvocation.MyCommand.Name) :: BEGIN :: $(Get-Date)"
+    $LabConfigurationFilePath = "$($MyInvocation.MyCommand.Module.ModuleBase)\LabConfiguration.json"
+    if (-not (Test-Path $LabConfigurationFilePath)) {
+        throw "$LabConfigurationFilePath does not exist. Run Set-LabConfiguration and try again."
     }
 
-    process {
-        $LabConfigurationFilePath = "$($MyInvocation.MyCommand.Module.ModuleBase)\LabConfiguration.json"
-        if (-not (Test-Path $LabConfigurationFilePath)) {
-            throw "$LabConfigurationFilePath does not exist. Run Set-LabConfiguration and try again."
-        }
+    if (-not $LAB_CONFIG)
+    {
+        throw "`$LAB_CONFIG script variable is not present. Run Set-LabConfiguration, ensure $LabConfigurationFilePath exists and try again."
+    }
 
-        if (-not $LAB_CONFIG)
-        {
-            throw "`$LAB_CONFIG script variable is not present. Run Set-LabConfiguration, ensure $LabConfigurationFilePath exists and try again."
-        }
-
-        # Ensure required properties are not null or empty
-        [System.Collections.ArrayList]$MissingProperties = @()
-        $REQ_CONFIG_PROPS.ForEach{
-            if ([string]::IsNullOrEmpty($LAB_CONFIG.$_)) {
-                [void]($MissingProperties.Add($_))
-            }
-        }
-
-        # Return error message if required properties, else return true
-        if ($MissingProperties.Count -ne 0) {
-            Write-Error "The following required lab configuration properties are not set: $($MissingProperties -join ', ')"
-        }
-        else {
-            $true
+    # Ensure required properties are not null or empty
+    [System.Collections.ArrayList]$MissingProperties = @()
+    $REQ_CONFIG_PROPS.ForEach{
+        if ([string]::IsNullOrEmpty($LAB_CONFIG.$_)) {
+            [void]($MissingProperties.Add($_))
         }
     }
 
-    end {
-        Write-Verbose "$($MyInvocation.MyCommand.Name) :: END   :: $(Get-Date)"
+    # Error if missing required properties
+    if ($MissingProperties.Count -ne 0) {
+        Write-Error "The following required lab configuration properties are not set: $($MissingProperties -join ', ')"
+    }
+    else {
+        $true
     }
 }
