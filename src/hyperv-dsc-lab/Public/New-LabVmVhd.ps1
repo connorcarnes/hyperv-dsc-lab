@@ -27,10 +27,10 @@ function New-LabVMVHD {
     }
 
     process {
-        $Config          = Get-DSCLabConfiguration
-        $VMVHDFolder     = "$($Config.VHDPath)\`$_"
-        $VMVHDPath       = "$VMVHDFolder\`$_.vhdx"
-        $BaseVHDPath     = $Config.BaseVHDPath
+        $Config = Get-DSCLabConfiguration
+        $VMVHDFolder = "$($Config.VHDPath)\`$_"
+        $VMVHDPath = "$VMVHDFolder\`$_.vhdx"
+        $BaseVHDPath = $Config.BaseVHDPath
         $SetupScriptPath = $Config.SetupScriptPath
 
         $ScriptBlock = @"
@@ -55,8 +55,8 @@ Dismount-VHD $VMVHDPath
 "@
 
         switch ($PSVersiontable.PSVersion.Major) {
-            7       { $Splat = @{Parallel = [scriptblock]::Create($ScriptBlock)} }
-            default { $Splat = @{Process  = [scriptblock]::Create($ScriptBlock)} }
+            7 { $Splat = @{Parallel = [scriptblock]::Create($ScriptBlock) } }
+            default { $Splat = @{Process = [scriptblock]::Create($ScriptBlock) } }
         }
 
         $VMs | ForEach-Object @Splat -Verbose

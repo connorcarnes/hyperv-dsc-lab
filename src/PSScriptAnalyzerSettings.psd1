@@ -18,9 +18,11 @@
     #________________________________________
     #ExcludeRules
     #Specify ExcludeRules when you want to exclude a certain rule from the the default set of rules.
-    #ExcludeRules = @(
-    #    'PSUseDeclaredVarsMoreThanAssignments'
-    #)
+    ExcludeRules = @(
+    #    'PSUseDeclaredVarsMoreThanAssignments',
+        'PSUseShouldProcessForStateChangingFunctions',
+        'PSReviewUnusedParameter'
+    )
     #________________________________________
     #Rules
     #Here you can specify customizations for particular rules. Several examples are included below:

@@ -42,7 +42,8 @@
     )
     PrivateData = @{
         PSData = @{
-            Tags = @('dsc','hyper-v','lab')
+            Tags       = @('dsc','hyper-v','lab')
+            ProjectUri = 'https://github.com/connorcarnes/hyperv-dsc-lab'
         }
     }
 }

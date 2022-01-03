@@ -51,11 +51,14 @@ function Remove-LabVM {
         [System.Collections.ArrayList]$ItemsToRemove = @()
         $VMs | ForEach-Object -Process {
             $VM = $_
+
             Get-ChildItem -Path $Config.CertificatePath -Filter "$VM-DSC-Lab-PubKey.cer" |
                 ForEach-Object {[void]($ItemsToRemove.Add($_.PSPath))}
+
             Get-ChildItem -Path "Cert:\LocalMachine\My" |
                 Where-Object {$_.Subject -eq "CN=$VM-DSC-Lab" -and $_.EnhancedKeyUsageList.FriendlyName -eq 'Document Encryption'} |
                 ForEach-Object {[void]($ItemsToRemove.Add($_.PSPath))}
+
             if (-not $SkipVHDremoval) {
                 Get-ChildItem "$($Config.VHDPath)\$VM" |
                     ForEach-Object {[void]($ItemsToRemove.Add($_.PSPath))}

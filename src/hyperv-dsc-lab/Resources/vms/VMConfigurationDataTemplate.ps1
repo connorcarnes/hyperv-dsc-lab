@@ -1,5 +1,5 @@
 ﻿@{
-    AllNodes = @(
+    AllNodes   = @(
         @{
             NodeName             = "*"
             RebootNodeIfNeeded   = `$true

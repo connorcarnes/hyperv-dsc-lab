@@ -3,7 +3,6 @@ Set-Location -Path $PSScriptRoot
 #-------------------------------------------------------------------------
 $ModuleName = 'hyperv-dsc-lab'
 $PathToManifest = [System.IO.Path]::Combine('..', '..', '..', $ModuleName, "$ModuleName.psd1")
-#$PathToTestData = [System.IO.Path]::Combine('..', '..', $ModuleName, "$ModuleName.psd1")
 #-------------------------------------------------------------------------
 if (Get-Module -Name $ModuleName -ErrorAction 'SilentlyContinue') {
     #if the module is already in memory, remove it
@@ -16,7 +15,7 @@ InModuleScope 'hyperv-dsc-lab' {
     Describe 'Get-DSCLabConfiguration' -Tag Unit {
         BeforeAll {
             # Import UnitTestData.ps1
-            . ([System.IO.Path]::Combine('..', "UnitTestData.ps1"))
+            # . ([System.IO.Path]::Combine('..', "UnitTestData.ps1"))
             $WarningPreference     = 'SilentlyContinue'
             $ErrorActionPreference = 'SilentlyContinue'
         } #beforeAll

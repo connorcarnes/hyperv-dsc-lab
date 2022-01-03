@@ -21,7 +21,7 @@
             Ensure             = "Present"
             Name               = "Nuget"
             ProviderName       = "Nuget"
-            SourceUri          = "http://nuget.org/api/v2/"
+            SourceLocation     = "http://nuget.org/api/v2/"
             InstallationPolicy = "Trusted"
         }
 
@@ -29,7 +29,7 @@
             Ensure             = "Present"
             Name               = "PSGallery"
             ProviderName       = "PowerShellGet"
-            SourceUri          = "https://www.powershellgallery.com/api/v2"
+            SourceLocation     = "https://www.powershellgallery.com/api/v2"
             InstallationPolicy = "Trusted"
         }
 

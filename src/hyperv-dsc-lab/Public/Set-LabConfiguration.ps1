@@ -25,7 +25,7 @@
 function Set-LabConfiguration {
     [CmdletBinding()]
     param (
-        [Parameter(Position=0)]
+        [Parameter(Position = 0)]
         [string]$LabConfigurationFilePath = "$($MyInvocation.MyCommand.Module.ModuleBase)\LabConfiguration.json",
         [Parameter(HelpMessage = "Certificate public keys from guest VMs will be exported here.")]
         [String]$CertificatePath,
@@ -65,8 +65,8 @@ function Set-LabConfiguration {
         }
 
         [System.Collections.ArrayList]$CommonParams = @()
-        [System.Management.Automation.PSCmdlet]::CommonParameters | Foreach-Object {[void]($CommonParams.Add($_))}
-        [System.Management.Automation.PSCmdlet]::OptionalCommonParameters | Foreach-Object {[void]($CommonParams.Add($_))}
+        [System.Management.Automation.PSCmdlet]::CommonParameters | ForEach-Object { [void]($CommonParams.Add($_)) }
+        [System.Management.Automation.PSCmdlet]::OptionalCommonParameters | ForEach-Object { [void]($CommonParams.Add($_)) }
         foreach ($Key in $PSBoundParameters.Keys) {
             if ($Key -in $CommonParams) {
                 Write-Verbose "Skipping common parameter $Key"

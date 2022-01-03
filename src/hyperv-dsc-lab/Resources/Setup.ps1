@@ -1,11 +1,11 @@
 ﻿Set-SConfig -AutoLaunch `$false
-Get-PackageProvider -name nuget -force
+Get-PackageProvider -Name nuget -Force
 @(
     'PSDscResources'
     'ComputerManagementDsc'
     'ActiveDirectoryDsc'
     'NetworkingDsc'
-).ForEach({Install-Module `$_ -confirm:`$false -force})
+).ForEach({ Install-Module `$_ -Confirm:`$false -Force })
 
 # Enable all DSC logs
 # https://docs.microsoft.com/en-us/powershell/dsc/troubleshooting/troubleshooting?view=dsc-1.1&viewFallbackFrom=powershell-7.2

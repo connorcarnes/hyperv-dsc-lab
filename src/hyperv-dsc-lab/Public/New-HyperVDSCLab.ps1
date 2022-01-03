@@ -47,7 +47,7 @@ function New-HyperVDSCLab {
             OutputPath        = $Config.MofPath
         }
         Initialize-DSCConfiguration @Splat
-        Start-DscConfiguration -Computername 'localhost' -Path $config.MofPath
+        Start-DscConfiguration -ComputerName 'localhost' -Path $config.MofPath
 
         Wait-LabVM -VM $VMs -LocalCredential $LocalCredential
 

@@ -41,10 +41,10 @@
 function Initialize-DSCConfiguration {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory,HelpMessage = "Path to file containing DSC configuration definition")]
+        [Parameter(Mandatory, HelpMessage = "Path to file containing DSC configuration definition")]
         [string]$ConfigurationFile,
 
-        [Parameter(Mandatory,HelpMessage = "Path where MOF files will be saved")]
+        [Parameter(Mandatory, HelpMessage = "Path where MOF files will be saved")]
         [string]$OutputPath,
 
         [Parameter(HelpMessage = "Parameter splat to pass to DSC configuration. Use if you need to pass parameters to the configuration.")]
@@ -56,15 +56,12 @@ function Initialize-DSCConfiguration {
     }
 
     process {
-        write-debug 'test'
-        $Config = Get-DSCLabConfiguration
-
         # Use AST to get the configuration name. Alternatively you could trim the file name but it's not
         # guaranteed that the file name will be the same as the configuration name.
         $Ast = [ScriptBlock]::Create((Get-Content -Path $ConfigurationFile -Raw))
         $ConfigurationName = $Ast.Ast.FindAll({
-            $args[0] -is [Management.Automation.Language.ConfigurationDefinitionAst]
-          }, $false).InstanceName.Value
+                $args[0] -is [Management.Automation.Language.ConfigurationDefinitionAst]
+            }, $false).InstanceName.Value
 
         if ($ConfigurationName.Count -eq 1) {
             Write-Verbose "Found exactly one configuration in $ConfigurationFile. Name of configuration: $ConfigurationName"
@@ -77,11 +74,11 @@ function Initialize-DSCConfiguration {
         }
 
         # Use AST to get params.
-        $ParamAst = $Ast.Ast.FindAll({
-            $args[0] -is [Management.Automation.Language.ParameterAst]
-          }, $true)
+        # $ParamAst = $Ast.Ast.FindAll({
+        #         $args[0] -is [Management.Automation.Language.ParameterAst]
+        #     }, $true)
 
-        $Splat = @{OutputPath=$OutputPath}
+        $Splat = @{OutputPath = $OutputPath}
         if ($ConfigurationSplat) {
             $Splat += $ConfigurationSplat
         }
@@ -89,9 +86,9 @@ function Initialize-DSCConfiguration {
         try {
             $Session = New-PSSession -UseWindowsPowerShell -ErrorAction 'Stop'
             [void](Invoke-Command -ErrorAction 'Stop' -Session $Session -ScriptBlock {
-                . $Using:ConfigurationFile
-                . $Using:ConfigurationName @Using:Splat
-            })
+                    . $Using:ConfigurationFile
+                    . $Using:ConfigurationName @Using:Splat
+                })
             $Session | Remove-PSSession -ErrorAction 'Stop'
         }
         catch {
