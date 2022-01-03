@@ -19,8 +19,9 @@ InModuleScope 'hyperv-dsc-lab' {
             # Load mock objects in UnitTestData.ps1 before each test in loop below
             #$ModuleBase = (Get-Module 'hyperv-dsc-lab').ModuleBase
             # $ModuleBase.Replace('\src\hyperv-dsc-lab','\src\Tests\Unit\UnitTestData.ps1')
-            # . "$ModuleBase\src\Tests\Unit\UnitTestData.ps1"
-            . ([System.IO.Path]::Combine('..',  'UnitTestData.ps1'))
+            #. "$ModuleBase\src\Tests\Unit\UnitTestData.ps1"
+            #. ([System.IO.Path]::Combine('..',  'UnitTestData.ps1'))
+            . $ModuleBase.Replace('\src\hyperv-dsc-lab','\src\Tests\Unit\UnitTestData.ps1')
         }
         Context 'Error' {
             It 'Errors if <_> is not set' -ForEach $REQ_CONFIG_PROPS {
