@@ -16,14 +16,14 @@
     Timeout in minutes the command will wait. Error is thrown is timeout is reached. Default value is 5 minutes.
 
     .EXAMPLE
-    Wait-DSCLabVM -VM $VMs -LocalCredential $LocalCredential
+    Wait-LabVM -VM $VMs -LocalCredential $LocalCredential
 
     Waits for DSC Lab VMs to be ready.
 
     .OUTPUTS
     [void]
 #>
-function Wait-DSCLabVM {
+function Wait-LabVM {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]

@@ -4,7 +4,7 @@
     CertificatePath         = 'C:\Path'
     VMConfiguration         = 'C:\Path\Configuration.ps1'
     MofPath                 = 'C:\Path'
-    LabVHDPath              = 'C:\Path'
+    VHDPath              = 'C:\Path'
     SetupScriptPath         = 'C:\Path\Setup.ps1'
     VMConfigurationDataPath = 'C:\Path\ConfigData.psd1'
     HostConfiguration       = 'C:\Path\Configuration.ps1'
@@ -20,7 +20,7 @@ $VALID_CONFIG_JSON = @"
     "CertificatePath": "C:\\Path",
     "VMConfiguration": "C:\\Path\\Configuration.ps1",
     "MofPath": "C:\\Path",
-    "LabVHDPath": "C:\\Path",
+    "VHDPath": "C:\\Path",
     "SetupScriptPath": "C:\\Path\\Setup.ps1",
     "VMConfigurationDataPath": "C:\\Path\\ConfigData.psd1",
     "HostConfiguration": "C:\\Path\\Configuration.ps1"
@@ -37,7 +37,7 @@ $INVALID_CONFIG_JSON = @"
     "CertificatePath": "C:\\Path",
     "VMConfiguration": "C:\\Path\\Configuration.ps1",
     "MofPath": "C:\\Path",
-    "LabVHDPath": "",
+    "VHDPath": "",
     "SetupScriptPath": "C:\\Path\\Setup.ps1",
     "VMConfigurationDataPath": "C:\\Path\\ConfigData.psd1",
     "HostConfiguration": "C:\\Path\\Configuration.ps1"

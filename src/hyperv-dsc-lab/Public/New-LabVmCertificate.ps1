@@ -4,7 +4,7 @@
 
     .DESCRIPTION
     Creates self-signed certificate on a VM and exports it to the host. Certificate is created in a remote PSSession. Certificate public key is exported
-    to the CertificatePath value of Get-DSCLabConfiguration with the name "<YourVMName>-DSC-Lab-PubKey.cer" and imported into the host's certificate store
+    to the CertificatePath value of Get-LabConfigurationwith the name "<YourVMName>-DSC-Lab-PubKey.cer" and imported into the host's certificate store
     at Cert:\LocalMachine\My.
 
     Certificates are created via New-SelfSignedCertificate with the below parameters::
@@ -21,10 +21,10 @@
 
     .EXAMPLE
     $Credential = Get-Credential
-    New-LabVmCertificate -VMs 'DC00','DC01' -Credential $Credential
+    New-LabVMCertificate -VMs 'DC00','DC01' -Credential $Credential
 
     Opens a remote session for DC00 and DC01 and creates a self-signed certificate on each VM. The certificate public key is exported
-    to the CertificatePath value of Get-DSCLabConfiguration and imported into the host's certificate store at Cert:\LocalMachine\My.
+    to the CertificatePath value of Get-LabConfigurationand imported into the host's certificate store at Cert:\LocalMachine\My.
 
     .OUTPUTS
     [void]
@@ -32,7 +32,7 @@
     .LINK
     https://docs.microsoft.com/en-us/powershell/dsc/pull-server/secureMOF?view=dsc-1.1
 #>
-function New-LabVmCertificate {
+function New-LabVMCertificate {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory,HelpMessage = "Array of VM names")]

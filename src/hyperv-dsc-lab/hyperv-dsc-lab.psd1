@@ -30,14 +30,14 @@
         }
     )
     FunctionsToExport = @(
-        'Expand-DSCConfigurationDataTemplate',
-        'Get-DSCLabConfiguration',
-        'Initialize-DSCLabConfiguration',
+        'Expand-ConfigurationDataTemplate',
+        'Get-LabConfiguration',
+        'Initialize-DSCConfiguration',
         'New-HyperVDSCLab',
-        'New-LabVmCertificate',
-        'New-LabVmVhd',
-        'Remove-DSCLabVM',
-        'Set-DSCLabConfiguration',
+        'New-LabVMCertificate',
+        'New-LabVMVHD',
+        'Remove-LabVM',
+        'Set-LabConfiguration',
         'Update-Mof'
     )
     PrivateData = @{

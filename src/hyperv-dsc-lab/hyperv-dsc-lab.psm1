@@ -32,7 +32,7 @@ foreach ($file in @($public + $private)) {
 
 $REQ_DSC_LAB_CONFIG_PROPS = @(
     "CertificatePath",
-    "LabVHDPath",
+    "VHDPath",
     "MofPath",
     "SetupScriptPath",
     "BaseVHDPath",

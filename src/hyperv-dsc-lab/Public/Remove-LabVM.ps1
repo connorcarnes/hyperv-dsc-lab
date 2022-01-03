@@ -17,14 +17,14 @@
 
     .EXAMPLE
     $VMs = 'DC00','DC01'
-    Remove-DSCLabVm -VMs $VMs
+    Remove-LabVM -VMs $VMs
 
     Deletes Lab VMs DC00 and DC01, including their VHDs and associated certificates.
 
     .OUTPUTS
     [void]
 #>
-function Remove-DSCLabVM {
+function Remove-LabVM {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -57,7 +57,7 @@ function Remove-DSCLabVM {
                 Where-Object {$_.Subject -eq "CN=$VM-DSC-Lab" -and $_.EnhancedKeyUsageList.FriendlyName -eq 'Document Encryption'} |
                 ForEach-Object {[void]($ItemsToRemove.Add($_.PSPath))}
             if (-not $SkipVHDremoval) {
-                Get-ChildItem "$($Config.LabVHDPath)\$VM" |
+                Get-ChildItem "$($Config.VHDPath)\$VM" |
                     ForEach-Object {[void]($ItemsToRemove.Add($_.PSPath))}
             }
         }

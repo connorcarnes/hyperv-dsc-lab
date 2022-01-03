@@ -3,7 +3,7 @@
     Helps with creating .psd1 files to be used as DSC ConfigurationData.
 
     .DESCRIPTION
-    Takes a template with unexpanded strings and uses values from Get-DSCLabConfiguration to expand them and create a valid .psd1 file.
+    Takes a template with unexpanded strings and uses values from Get-LabConfigurationto expand them and create a valid .psd1 file.
 
     This function relies on the $ExecutionContext.InvokeCommand.ExpandString method. Therefore, variables in the template file must be properly escaped.
 
@@ -14,7 +14,7 @@
         ConfigurationDataTemplate = ".\src\hyperv-dsc-lab\Resources\vms\VMConfigurationDataTemplate.ps1"
         OutputPath                = ".\src\hyperv-dsc-lab\Resources\vms\VMConfigurationData.psd1"
     }
-    Expand-DSCConfigurationDataTemplate @Splat
+    Expand-ConfigurationDataTemplate @Splat
 
     Creates a .psd1 file that can be used as DSC ConfigurationData.
 
@@ -33,7 +33,7 @@
     .LINK
     https://docs.microsoft.com/en-us/powershell/dsc/configurations/separatingenvdata?view=dsc-1.1
 #>
-function Expand-DSCConfigurationDataTemplate {
+function Expand-ConfigurationDataTemplate {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory,

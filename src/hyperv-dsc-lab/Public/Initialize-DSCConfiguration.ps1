@@ -1,9 +1,9 @@
 ﻿<#
     .SYNOPSIS
-    Creates a Windows PowerShell session on the local machine that imports and compiles a DSC Configuration.
+    Loads and compiles a DSC Configuration within a Windows PowerShell session.
 
     .DESCRIPTION
-    Creates a Windows PowerShell session on the local machine that imports and compiles a DSC Configuration.
+    Loads and compiles a DSC Configuration within a Windows PowerShell session.
 
     .PARAMETER ConfigurationFile
     Path to DSC configuration file.
@@ -20,11 +20,11 @@
         OutputPath         = 'C:\DSC\MOFs\'
         ConfigurationSplat = @{SomeParameter = 'SomeValue'}
     }
-    Initialize-DSCLabConfiguration @Splat
+    Initialize-DSCConfiguration @Splat
 
-    Imports the configuration MyConfig.ps1, compiles it, and saves the resulting MOF(s) to C:\DSC\MOFs\.
-    MyConfig.ps1 requires a value for the parameter 'SomeParameter', so the ConfigurationSplat parameter
-    of this function is used to pass the value.
+    Loads and compiles the configuration MyConfig.ps1 in a Windows PowerShell session. Resulting MOF(s) are saved to C:\DSC\MOFs\.
+    MyConfig.ps1 requires a value for the parameter 'SomeParameter', so the ConfigurationSplat parameter of this function is used
+    to pass the value.
 
     .OUTPUTS
     [void]
@@ -38,7 +38,7 @@
     .LINK
     https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.language.parameterast?view=powershellsdk-7.0.0
 #>
-function Initialize-DSCLabConfiguration {
+function Initialize-DSCConfiguration {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory,HelpMessage = "Path to file containing DSC configuration definition")]

@@ -15,7 +15,7 @@
     .LINK
         Link to other documentation
 #>
-function New-LabVmVhd {
+function New-LabVMVHD {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -28,7 +28,7 @@ function New-LabVmVhd {
 
     process {
         $Config          = Get-DSCLabConfiguration
-        $VMVHDFolder     = "$($Config.LabVHDPath)\`$_"
+        $VMVHDFolder     = "$($Config.VHDPath)\`$_"
         $VMVHDPath       = "$VMVHDFolder\`$_.vhdx"
         $BaseVHDPath     = $Config.BaseVHDPath
         $SetupScriptPath = $Config.SetupScriptPath

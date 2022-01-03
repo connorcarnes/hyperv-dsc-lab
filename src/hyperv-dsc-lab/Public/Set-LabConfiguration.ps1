@@ -22,15 +22,15 @@
     .LINK
     Link to other documentation
 #>
-function Set-DSCLabConfiguration {
+function Set-LabConfiguration {
     [CmdletBinding()]
     param (
         [Parameter(Position=0)]
-        [string]$DSCLabConfigurationFilePath = "$($MyInvocation.MyCommand.Module.ModuleBase)\DSCLabConfiguration.json",
+        [string]$LabConfigurationFilePath = "$($MyInvocation.MyCommand.Module.ModuleBase)\LabConfiguration.json",
         [Parameter(HelpMessage = "Certificate public keys from guest VMs will be exported here.")]
         [String]$CertificatePath,
         [Parameter(HelpMessage = "VHDs created for lab VMs will be saved here.")]
-        [String]$LabVHDPath,
+        [String]$VHDPath,
         [Parameter(HelpMessage = "MOF files for lab VMs will be saved here.")]
         [String]$MofPath,
         [Parameter(HelpMessage = "Path of script that will be copied to guest VMs and run on initial boot.")]
@@ -52,48 +52,38 @@ function Set-DSCLabConfiguration {
     }
 
     process {
-        if (-not (Test-Path $DSCLabConfigurationFilePath)) {
-            Write-Verbose "Configuration file not found at $DSCLabConfigurationFilePath. Creating new configuration file."
-            [void](New-Item -Path $DSCLabConfigurationFilePath -ItemType File)
+        if (-not (Test-Path $LabConfigurationFilePath)) {
+            Write-Verbose "Configuration file not found at $LabConfigurationFilePath. Creating new configuration file."
+            [void](New-Item -Path $LabConfigurationFilePath -ItemType File)
         }
 
-        try {
-            $CurrentConfig = Get-DSCLabConfiguration -DSCLabConfigurationFilePath $DSCLabConfigurationFilePath -ErrorAction 'Stop'
-        }
-        catch {
-            if ($_.exception.message -like "Required DSC Lab Configuration property*") {
-                Write-Verbose "Handling error: $($_.exception.message). It will be thrown later if required."
-            }
-            else {
-                throw $_
-            }
-        }
+        $Configuration = Get-LabConfiguration -LabConfigurationFilePath $LabConfigurationFilePath -ErrorAction 'SilentlyContinue'
 
-        if (-not $CurrentConfig) {
+        if (-not $Configuration) {
             Write-Verbose "Configuration file is empty, creating blank config object"
-            $CurrentConfig = [PSCustomObject]@{}
+            $Configuration = [PSCustomObject]@{}
         }
 
         [System.Collections.ArrayList]$CommonParams = @()
         [System.Management.Automation.PSCmdlet]::CommonParameters | Foreach-Object {[void]($CommonParams.Add($_))}
         [System.Management.Automation.PSCmdlet]::OptionalCommonParameters | Foreach-Object {[void]($CommonParams.Add($_))}
         foreach ($Key in $PSBoundParameters.Keys) {
-            Write-Verbose "Setting $Key"
             if ($Key -in $CommonParams) {
                 Write-Verbose "Skipping common parameter $Key"
             }
+            elseif (($Configuration.$Key) -and ($Configuration.$Key -ne $PSBoundParameters.$Key)) {
+                Write-Verbose "Updating $Key from $($Configuration.$Key) to $($PSBoundParameters.$Key)"
+                $Configuration.$Key = $PSBoundParameters.$Key
+            }
             else {
-                $CurrentConfig | Add-Member -NotePropertyName $Key -NotePropertyValue $PSBoundParameters.$Key -Force
+                Write-Verbose "Setting $Key to $($PSBoundParameters.$Key)"
+                $Configuration | Add-Member -NotePropertyName $Key -NotePropertyValue $PSBoundParameters.$Key -Force
             }
         }
 
-        $CurrentConfig | ConvertTo-Json | Out-File $DSCLabConfigurationFilePath -Force
+        $Configuration | ConvertTo-Json | Out-File $LabConfigurationFilePath -Force
 
-        $Configuration = Get-DSCLabConfiguration -DSCLabConfigurationFilePath $DSCLabConfigurationFilePath -ErrorVariable ErrVar
-
-        foreach ($Err in $ErrVar) {
-            Write-Error $Err.Exception.Message
-        }
+        Test-LabConfiguration $Configuration
 
         $Configuration
     }

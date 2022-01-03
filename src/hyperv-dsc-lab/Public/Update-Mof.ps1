@@ -3,7 +3,7 @@
     Copies MOF files generated on the host to VMs.
 
     .DESCRIPTION
-    Copies MOF files generated on the host to VMs. Searches MofPath of Get-DSCLabConfiguration for MOF files. Files are copied
+    Copies MOF files generated on the host to VMs. Searches MofPath of Get-LabConfigurationfor MOF files. Files are copied
     via a Remote PowerShell session and Invoke-Command. Files ending in .mof are copied to "C:\Windows\System32\Configuration\Pending.mof"
     Files ending in .meta.mof are copied to "C:\Windows\System32\Configuration\MetaConfig.mof". MOF files stored in these locations are
     applied when the VM is rebooted.
