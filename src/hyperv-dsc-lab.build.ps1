@@ -48,7 +48,7 @@ function Test-ManifestBool ($Path) {
 #Default Build
 $str = @()
 $str = 'Clean', 'ValidateRequirements', 'ImportModuleManifest'
-$str += 'FormattingCheck'
+#$str += 'FormattingCheck'
 $str += 'Analyze', 'Test'
 $str += 'CreateHelpStart'
 $str2 = $str
