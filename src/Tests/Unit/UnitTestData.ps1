@@ -43,3 +43,6 @@ $Script:INVALID_CONFIG_JSON = @"
     "HostConfiguration": "C:\\Path\\Configuration.ps1"
 }
 "@
+
+$Password = 'password' | ConvertTo-SecureString -AsPlainText -Force
+$Script:MockCred = [System.Management.Automation.PSCredential]::New('user',$Password)
