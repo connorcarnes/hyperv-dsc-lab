@@ -82,3 +82,5 @@ Set-Location $RootDir
 ```
 
 You may get an error stating multiple versions of a module were found. You will either need to remove the duplicate version(s) from `$ENV:PSModulePath` or version pin the module to the latest version in the DSC configuration file. For example if you have PackageManagement versions 1.0.0.1 and 1.4.7 installed, update the line `Import-DscResource -ModuleName 'PackageManagement'` in `VMConfig.ps1` to `Import-DscResource -ModuleName 'PackageManagement' -ModuleVersion '1.4.7'`.
+
+TBC
