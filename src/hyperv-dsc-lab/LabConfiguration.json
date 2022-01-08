@@ -1,8 +1,8 @@
 {
   "Other": {
-    "DC00IP": "172.26.16.10",
-    "DefaultGateway": "172.26.16.1",
-    "DC01IP": "172.26.16.11"
+    "DC00IP": "192.168.64.10",
+    "DefaultGateway": "192.168.64.1",
+    "DC01IP": "192.168.64.11"
   },
   "LabConfigurationFilePath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\LabConfiguration.json",
   "SetupScriptPath": "C:\\code\\hyperv-dsc-lab\\src\\hyperv-dsc-lab\\Resources\\Setup.ps1",

@@ -4,18 +4,18 @@
             NodeName             = "*"
             RebootNodeIfNeeded   = $true
             PSDscAllowDomainUser = $true
-            DNSAddresses         = '172.21.64.10', '172.21.64.11', '8.8.8.8', '1.1.1.1'
-            DefaultGateway       = '172.21.64.1'
+            DNSAddresses         = '192.168.64.10', '192.168.64.11', '8.8.8.8', '1.1.1.1'
+            DefaultGateway       = '192.168.64.1'
         },
         @{
             NodeName        = 'DC00'
-            IPAddress       = '172.21.64.10'
+            IPAddress       = '192.168.64.10'
             CertificateFile = 'D:\virt\certs\DC00-DSC-Lab-PubKey.cer'
             Role            = 'Domain Controller'
         },
         @{
             NodeName        = 'DC01'
-            IPAddress       = '172.21.64.11'
+            IPAddress       = '192.168.64.11'
             CertificateFile = 'D:\virt\certs\DC01-DSC-Lab-PubKey.cer'
             Role            = 'Domain Controller'
         }

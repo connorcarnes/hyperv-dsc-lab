@@ -69,7 +69,7 @@
         }
 
         DefaultGatewayAddress SetDefaultGateway {
-            Address        = $DefaultGateway
+            Address        = $Node.DefaultGateway
             InterfaceAlias = 'Ethernet'
             AddressFamily  = 'IPv4'
             DependsOn      = "[PackageManagement]NetworkingDsc"
