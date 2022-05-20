@@ -1,0 +1,7 @@
+{
+  "BaseVhdPath": "D:\\virt\\vhds\\base-vhds\\win22.vhdx",
+  "ConfigDataPath": "D:\\virt\\LabPath\\ConfigData.psd1",
+  "LabPath": "D:\\virt\\LabPath",
+  "ModulePath": "C:\\code\\hyperv-dsc-lab",
+  "PlainTextPassword": "#Password1"
+}
